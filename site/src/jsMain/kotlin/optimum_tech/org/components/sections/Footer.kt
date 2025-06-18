@@ -1,9 +1,11 @@
 package optimum_tech.org.components.sections
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.WhiteSpace
 import com.varabyte.kobweb.compose.foundation.layout.Box
+import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -20,6 +22,10 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Span
 import optimum_tech.org.toSitePalette
+import org.jetbrains.compose.web.css.px
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.toJSDate
 
 val FooterStyle = CssStyle.base {
     Modifier
@@ -27,28 +33,27 @@ val FooterStyle = CssStyle.base {
         .padding(topBottom = 1.5.cssRem, leftRight = 10.percent)
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun Footer(modifier: Modifier = Modifier) {
     Box(FooterStyle.toModifier().then(modifier), contentAlignment = Alignment.Center) {
-        Span(Modifier.textAlign(TextAlign.Center).toAttrs()) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             val sitePalette = ColorMode.current.toSitePalette()
-            SpanText("Built with ")
-            Link(
-                "https://github.com/varabyte/kobweb",
-                "Kobweb",
-                Modifier.setVariable(ColorVar, sitePalette.brand.primary),
-                variant = UncoloredLinkVariant
-            )
-            SpanText(", template designed by ")
 
-            // Huge thanks to UI Rocket (https://ui-rocket.com) for putting this great template design together for us!
-            // If you like what you see here and want help building your own site, consider checking out their services.
-            Link(
-                "https://ui-rocket.com",
-                "UI Rocket",
-                Modifier.setVariable(ColorVar, sitePalette.brand.accent).whiteSpace(WhiteSpace.NoWrap),
-                variant = UncoloredLinkVariant
-            )
+            Span(Modifier.textAlign(TextAlign.Center).toAttrs()) {
+                SpanText("Built with ")
+                Link(
+                    "https://github.com/varabyte/kobweb",
+                    "Kobweb",
+                    Modifier.setVariable(ColorVar, sitePalette.brand.primary),
+                    variant = UncoloredLinkVariant
+                )
+            }
+
+            Span(Modifier.textAlign(TextAlign.Center).margin(top = 4.px).toAttrs()) {
+                val year = remember { Clock.System.now().toJSDate().getFullYear().toString() }
+                SpanText("© $year optimum-tech.org. All rights reserved.")
+            }
         }
     }
 }
