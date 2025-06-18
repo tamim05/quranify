@@ -1,0 +1,49 @@
+name: Export to Invited Remote
+
+on:
+  push:
+    branches: [main]  # Adjust if you use a different source branch
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant permission to Gradle
+        run: chmod +x gradlew
+
+      - name: Build and Export site
+        run: ./gradlew kobwebExport
+
+      - name: Add invited remote and push export branch
+        env:
+          INVITED_REPO: https://<YOUR_GITHUB_USERNAME>:${{ secrets.INVITED_TOKEN }}@github.com/tamim05/optimumtech.git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          mkdir export-temp
+          cp -r .kobweb/site/* export-temp/
+          
+          git init
+          git remote add invited "$INVITED_REPO"
+          git checkout -b export
+          
+          rm -rf *
+          cp -r export-temp/* .
+          rm -rf export-temp
+          
+          git add .
+          git commit -m "Update exported site"
+          git push invited export --force
