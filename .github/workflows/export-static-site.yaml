@@ -1,8 +1,8 @@
-name: Export to Invited Remote
+name: Export Kobweb Static Site to Release Branch
 
 on:
   push:
-    branches: [main]
+    branches: [main]  # Trigger only when main is updated
 
 jobs:
   export:
@@ -24,14 +24,14 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Export Kobweb site
-        run: ./gradlew kobwebExport
+        run: ./gradlew :site:kobwebExport
 
-      - name: Copy Exported Site to temp folder
+      - name: Copy Exported Site to temporary folder
         run: |
           mkdir export
           cp -r site/.kobweb/site/* export/
 
-      - name: Create orphan branch for static files
+      - name: Create orphan branch and commit static files
         run: |
           git checkout --orphan release-temp
           git rm -rf .
@@ -41,7 +41,6 @@ jobs:
           git add .
           git commit -m "Export Kobweb static site"
 
-      - name: Push to 'release' branch on 'invited' remote
+      - name: Force push to release branch on origin
         run: |
-          git remote add invited https://x-access-token:${{ secrets.INVITED_PAT }}@github.com/<your-org-or-username>/<repo-name>.git
-          git push -f invited HEAD:release
+          git push -f origin HEAD:release
