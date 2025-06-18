@@ -1,37 +1,25 @@
-name: Export Kobweb Static Site to Release Branch
+name: Export Static Site to Release Branch
 
 on:
   push:
-    branches: [main]  # Trigger only when main is updated
+    branches: [main]
 
 jobs:
   export:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Grant permission to Gradle
-        run: chmod +x ./gradlew
-
-      - name: Build and Export Kobweb site
-        run: ./gradlew :site:kobwebExport
-
-      - name: Copy Exported Site to temporary folder
+      - name: Copy Exported Files to Temporary Folder
         run: |
           mkdir export
           cp -r site/.kobweb/site/* export/
 
-      - name: Create orphan branch and commit static files
+      - name: Create orphan release branch
         run: |
           git checkout --orphan release-temp
           git rm -rf .
@@ -39,8 +27,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
-          git commit -m "Export Kobweb static site"
+          git commit -m "Deploy static site from main"
 
-      - name: Force push to release branch on origin
+      - name: Push to release branch
         run: |
           git push -f origin HEAD:release
