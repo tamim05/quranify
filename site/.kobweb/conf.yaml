@@ -1,0 +1,14 @@
+site:
+  title: "Optimumtech"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/kotlin-webpack/js/developmentExecutable/org.js"
+      api: "build/libs/org.jar"
+    prod:
+      script: "build/kotlin-webpack/js/productionExecutable/org.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8080
