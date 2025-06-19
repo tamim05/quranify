@@ -43,15 +43,18 @@ fun PageLayout(ctx: PageContext, content: @Composable ColumnScope.() -> Unit) {
         modifier = Modifier
             .background(ColorMode.current.toSitePalette().surface.darkened(0.1f))
             .fillMaxSize()
-            .minWidth(80.vw)
+            .minWidth(90.vw)
             .margin(leftRight = autoLength),
         contentAlignment = Alignment.Center){
-        Div(Modifier.fillMaxSize().toAttrs()){
-            Column {
+        Div(Modifier.fillMaxSize().align(Alignment.Center).toAttrs()){
+            Column (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally){
                 NavHeader()
                 Div(Modifier
+                    .fillMaxWidth()
                     .flexFlow(FlexDirection.Column, FlexWrap.Wrap)
-                    .padding(top = 3.cssRem, leftRight = 4.cssRem, bottom = 3.cssRem)
+                    .padding(top = 1.cssRem, leftRight = 2.cssRem, bottom = 3.cssRem)
                     .toAttrs()) {
                     content()
                 }
