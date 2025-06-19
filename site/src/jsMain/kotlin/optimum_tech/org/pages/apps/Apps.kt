@@ -1,6 +1,10 @@
 package optimum_tech.org.pages.apps
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import com.varabyte.kobweb.compose.css.BackgroundPosition
 import com.varabyte.kobweb.compose.css.BackgroundSize
 import com.varabyte.kobweb.compose.css.BoxShadow
@@ -11,6 +15,7 @@ import com.varabyte.kobweb.compose.css.JustifyContent
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.Transition
+import com.varabyte.kobweb.compose.css.TransitionTimingFunction
 import com.varabyte.kobweb.compose.css.autoLength
 import com.varabyte.kobweb.compose.css.functions.CSSUrl
 import com.varabyte.kobweb.compose.css.functions.opacity
@@ -44,6 +49,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.data.add
@@ -87,7 +93,11 @@ data class AppItem(
     val playStoreUrl: String? = null,
     val appStoreUrl: String? = null,
     val screenshots: List<String> = emptyList(),
-    val isFeatured: Boolean = false
+    val isFeatured: Boolean = false,
+    val longDescription: String = "",
+    val features: List<String> = emptyList(),
+    val requirements: String = "",
+    val version: String = "1.0.0"
 )
 
 val appList = listOf(
@@ -95,6 +105,7 @@ val appList = listOf(
         name = "VocaMaster",
         emoji = "🧠",
         description = "Master Japanese vocabulary with JLPT-ready flashcards and spaced repetition algorithms.",
+        longDescription = "VocaMaster is the ultimate Japanese vocabulary learning app designed specifically for JLPT preparation. Using scientifically-proven spaced repetition algorithms, it helps you memorize and retain thousands of Japanese words efficiently. The app includes comprehensive vocabulary sets for all JLPT levels (N5-N1) with native pronunciation, example sentences, and contextual usage.",
         subdomain = "vocamaster",
         playStoreUrl = "https://play.google.com/store/apps/details?id=com.optimumtech.vocamaster",
         appStoreUrl = "https://apps.apple.com/app/vocamaster/id123456789",
@@ -103,12 +114,23 @@ val appList = listOf(
             "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=600&fit=crop",
             "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&h=600&fit=crop"
         ),
+        features = listOf(
+            "JLPT N5-N1 vocabulary sets",
+            "Spaced repetition algorithm",
+            "Native pronunciation audio",
+            "Progress tracking and statistics",
+            "Offline mode support",
+            "Custom study sessions"
+        ),
+        requirements = "Android 7.0+ / iOS 12.0+",
+        version = "2.1.4",
         isFeatured = true
     ),
     AppItem(
         name = "KanjiCrafter",
         emoji = "🈶",
         description = "Learn Kanji through interactive drawing and advanced recognition technology.",
+        longDescription = "KanjiCrafter revolutionizes Kanji learning through interactive stroke-by-stroke drawing exercises. Our advanced handwriting recognition technology provides real-time feedback on your writing, helping you master proper stroke order and character formation. The app covers all essential Kanji characters with detailed breakdowns, mnemonics, and practice exercises.",
         subdomain = "kanjicrafter",
         playStoreUrl = "https://play.google.com/store/apps/details?id=com.optimumtech.kanjicrafter",
         screenshots = listOf(
@@ -116,24 +138,45 @@ val appList = listOf(
             "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=300&h=600&fit=crop",
             "https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=300&h=600&fit=crop"
         ),
+        features = listOf(
+            "Interactive stroke drawing",
+            "Real-time handwriting recognition",
+            "Stroke order animations",
+            "Kanji breakdown and radicals",
+            "Mnemonic learning aids",
+            "Writing practice sheets"
+        ),
+        requirements = "Android 8.0+ / iOS 13.0+",
+        version = "1.8.2",
         isFeatured = true
     ),
     AppItem(
         name = "GrammarHero",
         emoji = "📘",
         description = "Tackle essential Japanese grammar with interactive exercises and real-world examples.",
+        longDescription = "GrammarHero makes Japanese grammar accessible and engaging through interactive lessons and real-world examples. From basic particles to complex grammatical structures, our comprehensive curriculum covers all essential grammar points with clear explanations, practice exercises, and contextual examples from everyday Japanese.",
         subdomain = "grammarhero",
         appStoreUrl = "https://apps.apple.com/app/grammarhero/id987654321",
         screenshots = listOf(
             "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&h=600&fit=crop",
             "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=600&fit=crop",
             "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=300&h=600&fit=crop"
-        )
+        ),
+        features = listOf(
+            "Comprehensive grammar lessons",
+            "Interactive exercises",
+            "Real-world example sentences",
+            "Grammar pattern explanations",
+            "Progress tracking",
+            "Quiz and test modes"
+        ),
+        requirements = "iOS 12.0+ only",
+        version = "1.5.1"
     )
 )
 
 @Composable
-fun AppCard(app: AppItem, isFeatured: Boolean = false) {
+fun AppCard(app: AppItem, isFeatured: Boolean = false, onCardClick: (AppItem) -> Unit) {
     val cardWidth = if (isFeatured) 28.cssRem else 24.cssRem
     val cardPadding = if (isFeatured) 2.5.cssRem else 2.cssRem
 
@@ -153,6 +196,7 @@ fun AppCard(app: AppItem, isFeatured: Boolean = false) {
                     property("backdrop-filter", "blur(10px)")
                     property("--webkit-backdrop-filter", "blur(10px)")
                 }
+                onClick { onCardClick(app) }
             }
     ) {
         if (app.screenshots.isNotEmpty()) {
@@ -175,15 +219,13 @@ fun AppCard(app: AppItem, isFeatured: Boolean = false) {
                             .width(100.percent)
                             .height(100.percent)
                             .position(Position.Absolute)
-//                            .backgroundImage(CSSUrl(""))
-//                            .background("url($screenshot)")
                             .backgroundSize(BackgroundSize.Cover)
                             .backgroundPosition(BackgroundPosition.of(CSSPosition.Center))
                             .borderRadius(1.cssRem)
                             .toAttrs {
                                 style {
                                     opacity(if (index == 0) 1.0 else 0.0)
-//                                    transition("opacity 0.5s ease-in-out")
+                                    property("background-image", "url($screenshot)")
                                 }
                                 ref { element ->
                                     window.setInterval({
@@ -324,6 +366,390 @@ fun AppCard(app: AppItem, isFeatured: Boolean = false) {
     }
 }
 
+@Composable
+fun AppDetailView(app: AppItem, onClose: () -> Unit) {
+    Div(
+        Modifier
+            .position(Position.Fixed)
+            .width(100.percent)
+            .backgroundColor(rgba(15, 23, 42, 0.98))
+            .color(white)
+            .overflow(Overflow.Auto)
+            .transition(Transition.of("visibility",3.s, TransitionTimingFunction.EaseInOut))
+            .toAttrs {
+                style {
+                    property("top", "0")
+                    property("left", "0")
+                    property("z-index", "1000")
+                    property("backdrop-filter", "blur(20px)")
+                    property("animation", "fadeIn 0.3s ease-out")
+                }
+            }
+    ) {
+        // Close Button
+        Button(
+            onClick = { onClose() },
+            Modifier
+                .position(Position.Fixed)
+                .padding(1.cssRem)
+                .borderRadius(50.px)
+                .backgroundColor(rgba(255, 255, 255, 0.1))
+                .color(white)
+                .border(1.px, LineStyle.Solid, rgba(255, 255, 255, 0.2))
+                .cursor(Cursor.Pointer)
+                .fontSize(1.5.cssRem)
+                .width(3.cssRem)
+                .height(3.cssRem)
+                .transition(Transition.of("background-color", 0.2.s))
+                .margin(top = 2.cssRem, right = 2.cssRem)
+                .zIndex(1001)
+//                .toAttrs {
+//                    style {
+//                        property("top", "2rem")
+//                        property("right", "2rem")
+//                        property("z-index", "1001")
+//                    }
+//                }
+        ) {
+            Text("×")
+        }
+
+        Div(
+            Modifier
+                .maxWidth(1200.px)
+                .margin(leftRight = autoLength)
+                .padding(4.cssRem, 2.cssRem)
+                .toAttrs()
+        ) {
+            // Header Section
+            Div(
+                Modifier
+                    .display(DisplayStyle.Flex)
+                    .gap(3.cssRem)
+                    .margin(bottom = 4.cssRem)
+                    .toAttrs {
+                        style {
+                            property("align-items", "flex-start")
+                        }
+                    }
+            ) {
+                // App Icon and Basic Info
+                Div(
+                    Modifier
+                        .toAttrs {
+                            style {
+                                property("flex", "0 0 auto")
+                            }
+                        }
+                ) {
+                    Div(
+                        Modifier
+                            .width(8.cssRem)
+                            .height(8.cssRem)
+                            .borderRadius(2.cssRem)
+                            .backgroundColor(rgba(255, 255, 255, 0.1))
+                            .display(DisplayStyle.Flex)
+                            .justifyContent(JustifyContent.Center)
+                            .fontSize(4.cssRem)
+                            .margin(bottom = 1.cssRem)
+                            .toAttrs {
+                                style {
+                                    property("align-items", "center")
+                                }
+                            }
+                    ) {
+                        Text(app.emoji)
+                    }
+
+                    Div(
+                        Modifier
+                            .display(DisplayStyle.Flex)
+                            .gap(0.5.cssRem)
+                            .flexWrap(FlexWrap.Wrap)
+                            .toAttrs()
+                    ) {
+                        app.platforms.forEach { platform ->
+                            SpanText(
+                                platform,
+                                Modifier
+                                    .fontSize(0.75.cssRem)
+                                    .padding(0.375.cssRem, 0.75.cssRem)
+                                    .borderRadius(50.px)
+                                    .backgroundColor(rgb(51, 65, 85))
+                                    .color(white)
+                                    .fontWeight(FontWeight.Medium)
+                            )
+                        }
+                    }
+                }
+
+                // App Details
+                Div(
+                    Modifier
+                        .toAttrs {
+                            style {
+                                property("flex", "1")
+                            }
+                        }
+                ) {
+                    SpanText(
+                        app.name,
+                        Modifier
+                            .fontSize(3.cssRem)
+                            .fontWeight(FontWeight.ExtraBold)
+                            .display(DisplayStyle.Block)
+                            .margin(bottom = 0.5.cssRem)
+                    )
+
+                    SpanText(
+                        "Version ${app.version}",
+                        Modifier
+                            .fontSize(1.cssRem)
+                            .color(rgb(148, 163, 184))
+                            .display(DisplayStyle.Block)
+                            .margin(bottom = 1.cssRem)
+                    )
+
+                    SpanText(
+                        app.longDescription,
+                        Modifier
+                            .fontSize(1.25.cssRem)
+                            .color(rgb(203, 213, 225))
+                            .display(DisplayStyle.Block)
+                            .lineHeight(1.7)
+                            .margin(bottom = 2.cssRem)
+                    )
+
+                    // Action Buttons
+                    Div(
+                        Modifier
+                            .display(DisplayStyle.Flex)
+                            .gap(1.cssRem)
+                            .flexWrap(FlexWrap.Wrap)
+                            .toAttrs()
+                    ) {
+                        Button(
+                            onClick = {
+                                val url = "https://${app.subdomain}.optimum-tech.org"
+                                window.open(url, "_blank")
+                            },
+                            Modifier
+                                .padding(1.cssRem, 2.cssRem)
+                                .borderRadius(50.px)
+                                .backgroundColor(rgb(147, 51, 234))
+                                .color(white)
+                                .fontWeight(FontWeight.SemiBold)
+                                .fontSize(1.cssRem)
+                                .cursor(Cursor.Pointer)
+                                .border(0.px, LineStyle.None, white)
+                                .transition(Transition.of("background-color", 0.2.s))
+                        ) {
+                            Text("Launch App")
+                        }
+
+                        app.playStoreUrl?.let { url ->
+                            Button(
+                                onClick = { window.open(url, "_blank") },
+                                Modifier
+                                    .padding(1.cssRem, 2.cssRem)
+                                    .borderRadius(50.px)
+                                    .backgroundColor(rgba(255, 255, 255, 0.1))
+                                    .color(white)
+                                    .fontWeight(FontWeight.Medium)
+                                    .fontSize(1.cssRem)
+                                    .cursor(Cursor.Pointer)
+                                    .border(1.px, LineStyle.Solid, rgba(255, 255, 255, 0.2))
+                                    .transition(Transition.of("background-color", 0.2.s))
+                            ) {
+                                Text("Play Store")
+                            }
+                        }
+
+                        app.appStoreUrl?.let { url ->
+                            Button(
+                                onClick = { window.open(url, "_blank") },
+                                Modifier
+                                    .padding(1.cssRem, 2.cssRem)
+                                    .borderRadius(50.px)
+                                    .backgroundColor(rgba(255, 255, 255, 0.1))
+                                    .color(white)
+                                    .fontWeight(FontWeight.Medium)
+                                    .fontSize(1.cssRem)
+                                    .cursor(Cursor.Pointer)
+                                    .border(1.px, LineStyle.Solid, rgba(255, 255, 255, 0.2))
+                                    .transition(Transition.of("background-color", 0.2.s))
+                            ) {
+                                Text("App Store")
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Screenshots Section
+            if (app.screenshots.isNotEmpty()) {
+                Div(
+                    Modifier
+                        .margin(bottom = 4.cssRem)
+                        .toAttrs()
+                ) {
+                    SpanText(
+                        "Screenshots",
+                        Modifier
+                            .fontSize(2.cssRem)
+                            .fontWeight(FontWeight.Bold)
+                            .display(DisplayStyle.Block)
+                            .margin(bottom = 2.cssRem)
+                    )
+
+                    Div(
+                        Modifier
+                            .display(DisplayStyle.Flex)
+                            .gap(1.5.cssRem)
+                            .overflow(Overflow.Auto)
+                            .padding(bottom = 1.cssRem)
+                            .toAttrs {
+                                style {
+                                    property("scroll-behavior", "smooth")
+                                }
+                            }
+                    ) {
+                        app.screenshots.forEach { screenshot ->
+                            Div(
+                                Modifier
+                                    .width(12.cssRem)
+                                    .height(24.cssRem)
+                                    .borderRadius(1.cssRem)
+                                    .backgroundColor(rgba(255, 255, 255, 0.05))
+                                    .backgroundSize(BackgroundSize.Cover)
+                                    .backgroundPosition(BackgroundPosition.of(CSSPosition.Center))
+                                    .cursor(Cursor.Pointer)
+                                    .transition(Transition.of("transform", 0.2.s))
+                                    .toAttrs {
+                                        style {
+                                            property("background-image", "url($screenshot)")
+                                            property("flex-shrink", "0")
+                                        }
+                                    }
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Features and Requirements Section
+            Div(
+                Modifier
+                    .display(DisplayStyle.Flex)
+                    .gap(4.cssRem)
+                    .toAttrs {
+                        style {
+                            property("align-items", "flex-start")
+                        }
+                    }
+            ) {
+                // Features
+                if (app.features.isNotEmpty()) {
+                    Div(
+                        Modifier
+                            .toAttrs {
+                                style {
+                                    property("flex", "1")
+                                }
+                            }
+                    ) {
+                        SpanText(
+                            "Key Features",
+                            Modifier
+                                .fontSize(1.75.cssRem)
+                                .fontWeight(FontWeight.Bold)
+                                .display(DisplayStyle.Block)
+                                .margin(bottom = 1.5.cssRem)
+                        )
+
+                        Column(
+                            Modifier.gap(1.cssRem)
+                        ) {
+                            app.features.forEach { feature ->
+                                Div(
+                                    Modifier
+                                        .display(DisplayStyle.Flex)
+                                        .gap(0.75.cssRem)
+                                        .toAttrs {
+                                            style {
+                                                property("align-items", "flex-start")
+                                            }
+                                        }
+                                ) {
+                                    SpanText(
+                                        "✓",
+                                        Modifier
+                                            .color(rgb(34, 197, 94))
+                                            .fontWeight(FontWeight.Bold)
+                                            .fontSize(1.25.cssRem)
+                                    )
+                                    SpanText(
+                                        feature,
+                                        Modifier
+                                            .color(rgb(203, 213, 225))
+                                            .fontSize(1.1.cssRem)
+                                            .lineHeight(1.6)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Requirements
+                Div(
+                    Modifier
+                        .toAttrs {
+                            style {
+                                property("flex", "0 0 20rem")
+                            }
+                        }
+                ) {
+                    SpanText(
+                        "Requirements",
+                        Modifier
+                            .fontSize(1.75.cssRem)
+                            .fontWeight(FontWeight.Bold)
+                            .display(DisplayStyle.Block)
+                            .margin(bottom = 1.5.cssRem)
+                    )
+
+                    Div(
+                        Modifier
+                            .padding(1.5.cssRem)
+                            .borderRadius(1.cssRem)
+                            .backgroundColor(rgba(255, 255, 255, 0.05))
+                            .border(1.px, LineStyle.Solid, rgba(255, 255, 255, 0.1))
+                            .toAttrs()
+                    ) {
+                        SpanText(
+                            "System Requirements",
+                            Modifier
+                                .fontSize(1.1.cssRem)
+                                .fontWeight(FontWeight.SemiBold)
+                                .display(DisplayStyle.Block)
+                                .margin(bottom = 0.75.cssRem)
+                        )
+
+                        SpanText(
+                            app.requirements,
+                            Modifier
+                                .color(rgb(203, 213, 225))
+                                .fontSize(1.cssRem)
+                                .lineHeight(1.6)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Page("/apps")
 @Layout(".components.layouts.PageLayout")
 @Composable
@@ -331,6 +757,9 @@ fun Apps() {
     val ctx = rememberPageContext()
     val featuredApps = appList.filter { it.isFeatured }
     val regularApps = appList.filter { !it.isFeatured }
+
+    // State for selected app
+    var selectedApp by remember { mutableStateOf<AppItem?>(null) }
 
     Div(
         Modifier
@@ -361,14 +790,7 @@ fun Apps() {
                         .fontWeight(FontWeight.ExtraBold)
                         .display(DisplayStyle.Block)
                         .margin(bottom = 1.cssRem)
-                        //.backgroundImage("linear-gradient(135deg, #667eea 0%, #764ba2 100%)")
-                        .color(transparent)
-//                        .toAttrs {
-//                            style {
-//                                property("-webkit-background-clip", "text")
-//                                property("background-clip", "text")
-//                            }
-//                        }
+                        .color(white)
                 )
 
                 SpanText(
@@ -419,7 +841,7 @@ fun Apps() {
                             .toAttrs()
                     ) {
                         featuredApps.forEach { app ->
-                            AppCard(app, isFeatured = true)
+                            AppCard(app, isFeatured = true) { selectedApp = it }
                         }
                     }
                 }
@@ -460,11 +882,16 @@ fun Apps() {
                             .toAttrs()
                     ) {
                         regularApps.forEach { app ->
-                            AppCard(app, isFeatured = false)
+                            AppCard(app, isFeatured = false) { selectedApp = it }
                         }
                     }
                 }
             }
+        }
+
+        // App Detail View Overlay
+        selectedApp?.let { app ->
+            AppDetailView(app) { selectedApp = null }
         }
     }
 }
