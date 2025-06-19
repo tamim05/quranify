@@ -153,15 +153,6 @@ fun AppCard(app: AppItem, isFeatured: Boolean = false) {
                     property("backdrop-filter", "blur(10px)")
                     property("--webkit-backdrop-filter", "blur(10px)")
                 }
-//                onMouseEnter {
-//                    style {
-//                        transform()
-//                    }
-//                    it.target.style.transform = "translateY(-8px)"
-//                }
-//                onMouseLeave {
-//                    it.target.style.transform = "translateY(0px)"
-//                }
             }
     ) {
         if (app.screenshots.isNotEmpty()) {
