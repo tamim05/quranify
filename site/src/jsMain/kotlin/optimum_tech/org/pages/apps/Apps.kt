@@ -46,7 +46,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
+import com.varabyte.kobweb.compose.ui.modifiers.right
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
+import com.varabyte.kobweb.compose.ui.modifiers.top
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
@@ -78,7 +80,6 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.get
 import kotlin.let
-
 @InitRoute
 fun initAppsPage(ctx: InitRouteContext) {
     ctx.data.add(PageLayoutData("Apps"))
@@ -372,23 +373,64 @@ fun AppDetailView(app: AppItem, onClose: () -> Unit) {
         Modifier
             .position(Position.Fixed)
             .width(100.percent)
+            .height(100.vh)
             .backgroundColor(rgba(15, 23, 42, 0.98))
             .color(white)
             .overflow(Overflow.Auto)
-            .transition(Transition.of("visibility",3.s, TransitionTimingFunction.EaseInOut))
             .toAttrs {
                 style {
                     property("top", "0")
                     property("left", "0")
                     property("z-index", "1000")
                     property("backdrop-filter", "blur(20px)")
-                    property("animation", "fadeIn 0.3s ease-out")
+                    property("animation", "zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)")
                 }
             }
     ) {
+        // Add CSS animations
+        Div(
+            Modifier.toAttrs {
+                style {
+                    property("display", "none")
+                }
+                ref { element ->
+                    val style = kotlinx.browser.document.createElement("style")
+                    style.textContent = """
+                        @keyframes zoomIn {
+                            from {
+                                opacity: 0;
+                                transform: scale(0.3);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: scale(1);
+                            }
+                        }
+                        @keyframes zoomOut {
+                            from {
+                                opacity: 1;
+                                transform: scale(1);
+                            }
+                            to {
+                                opacity: 0;
+                                transform: scale(0.3);
+                            }
+                        }
+                    """.trimIndent()
+                    kotlinx.browser.document.head?.appendChild(style)
+                    onDispose { }
+                }
+            }
+        )
+
         // Close Button
         Button(
-            onClick = { onClose() },
+            onClick = {
+                // Add exit animation before closing
+                val element = kotlinx.browser.document.querySelector("[style*='zoomIn']") as? org.w3c.dom.HTMLElement
+                element?.style?.animation = "zoomOut 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19)"
+                window.setTimeout({ onClose() }, 300)
+            },
             Modifier
                 .position(Position.Fixed)
                 .padding(1.cssRem)
@@ -401,15 +443,9 @@ fun AppDetailView(app: AppItem, onClose: () -> Unit) {
                 .width(3.cssRem)
                 .height(3.cssRem)
                 .transition(Transition.of("background-color", 0.2.s))
-                .margin(top = 2.cssRem, right = 2.cssRem)
+                .top(2.cssRem)
+                .right(2.cssRem)
                 .zIndex(1001)
-//                .toAttrs {
-//                    style {
-//                        property("top", "2rem")
-//                        property("right", "2rem")
-//                        property("z-index", "1001")
-//                    }
-//                }
         ) {
             Text("×")
         }
@@ -749,7 +785,6 @@ fun AppDetailView(app: AppItem, onClose: () -> Unit) {
         }
     }
 }
-
 @Page("/apps")
 @Layout(".components.layouts.PageLayout")
 @Composable
