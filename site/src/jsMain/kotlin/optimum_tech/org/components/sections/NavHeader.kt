@@ -181,7 +181,6 @@ LaunchedEffect(currentPath){
     Link( "/apps", "Apps", navModifier("/apps"))
     Link("/services", "Services", navModifier("/services"))
     Link("/about", "About", navModifier("/about"))
-    Link("/contact", "Contact", navModifier("/contact"))
 }
 
 
@@ -243,7 +242,7 @@ private fun Logo() {
 fun NavHeader() {
     // State for mobile menu
     var menuState by remember { mutableStateOf(SideMenuState.CLOSED) }
-
+    val ctx = rememberPageContext()
     // Effect to close menu when screen size changes
     LaunchedEffect(Unit) {
         // This will help reset the menu state when component recomposes due to screen size changes
@@ -275,10 +274,10 @@ fun NavHeader() {
                 MenuItems()
                 ColorModeButton()
                 Button(
-                    onClick = { /* Add your CTA action here */ },
+                    onClick = { ctx.router.navigateTo("/contact") },
                     CTAButtonStyle.toModifier()
                 ) {
-                    Text("Get Started")
+                    Text("Contact")
                 }
             }
 

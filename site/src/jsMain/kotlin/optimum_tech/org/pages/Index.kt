@@ -152,7 +152,7 @@ val PrimaryButtonStyle = CssStyle {
             .fontSize(1.125.cssRem)
             .border(0.px)
             .cursor(Cursor.Pointer)
-            .allTransition()
+            .allTransition(500.ms)
     }
     hover {
         Modifier
@@ -164,6 +164,7 @@ val PrimaryButtonStyle = CssStyle {
 val SecondaryButtonStyle = CssStyle {
     base {
         Modifier
+            .textOverflow(TextOverflow.Ellipsis)
             .border(2.px, LineStyle.Solid, Color.rgb(147, 51, 234))
             .padding(1.cssRem, 2.cssRem)
             .borderRadius(50.px)
@@ -172,7 +173,7 @@ val SecondaryButtonStyle = CssStyle {
             .fontSize(1.125.cssRem)
             .backgroundColor(Colors.Transparent)
             .cursor(Cursor.Pointer)
-            .allTransition()
+            .allTransition(500.ms)
     }
     hover {
         Modifier.backgroundColor(rgba(147, 51, 234, 0.1))
@@ -364,17 +365,13 @@ fun HomePage() {
                 }
 
                 Div(HeroTitleStyle.toAttrs()) {
-                    SpanText("Build Once, ")
-                    SpanText(
-                        "Deploy Everywhere",
-                        GradientTextStyle.toModifier()
-                    )
+                    SpanText("One Developer, ")
+                    SpanText("Unlimited Possibilities", GradientTextStyle.toModifier())
                 }
 
                 Div(HeroDescriptionStyle.toAttrs()) {
                     SpanText(
-                        "Transform your ideas into powerful cross-platform applications with Kotlin Multiplatform. " +
-                                "We craft native-quality apps that run seamlessly on Android, iOS, and beyond."
+                        "Explore a collection of simple, fast, and ethical apps. Built with Kotlin Multiplatform and crafted to run natively on Android, iOS, and Desktop."
                     )
                 }
 
@@ -402,20 +399,19 @@ fun HomePage() {
                 DemoGridStyle.toModifier().displayIfAtLeast(Breakpoint.MD).toAttrs()
             ) {
                 // Main Feature Card
-                Div(MainCardStyle.toAttrs()) {
-                    SpanText(
-                        "📱 Android Apps",
-                        Modifier.fontSize(1.125.cssRem)
-                            .fontWeight(FontWeight.SemiBold)
-                            .margin(bottom = 1.cssRem)
-                            .color(Colors.White)
-                    )
-                    SpanText(
-                        "Native Android development with modern Kotlin",
-                        Modifier.color(Color.rgb(203, 213, 225))
-                            .fontSize(0.875.cssRem)
-                            .margin(bottom=1.cssRem)
-                    )
+                Div(MainCardStyle.toModifier()
+                    .flexFlow(FlexDirection.Column, FlexWrap.Wrap).toAttrs()) {
+                    Column {
+                        SpanText(
+                            "📱 Android Apps",
+                            Modifier.fontSize(1.125.cssRem)
+                                .fontWeight(FontWeight.SemiBold)
+                                .margin(bottom = 1.cssRem)
+                                .color(Colors.White)
+                        )
+                        SpanText("Clean, fast, and modern Android apps — optimized for real users.",
+                            Modifier.fontWeight(FontWeight.Thin))
+                    }
                     Row(Modifier.gap(0.5.cssRem)) {
                         Div(
                             Modifier
@@ -446,13 +442,16 @@ fun HomePage() {
 
                 // Side Cards
                 Div(GridCardStyle.toAttrs()) {
-                    SpanText("🌍", Modifier.fontSize(1.5.cssRem).margin(bottom=0.5.cssRem))
-                    SpanText("Multiplatform", Modifier.fontSize(0.875.cssRem).fontWeight(FontWeight.Medium).color(Colors.White))
-                }
+                    Column {
+                        SpanText("🌍", Modifier.fontSize(1.5.cssRem).margin(bottom=0.5.cssRem))
+                        SpanText("Multiplatform", Modifier.fontSize(0.875.cssRem).fontWeight(FontWeight.Medium).color(Colors.White))
+                    }}
 
                 Div(GridCardStyle.toAttrs()) {
-                    SpanText("💻", Modifier.fontSize(1.5.cssRem).margin(bottom=0.5.cssRem))
-                    SpanText("Clean Code", Modifier.fontSize(0.875.cssRem).fontWeight(FontWeight.Medium).color(Colors.White))
+                    Column {
+                        SpanText("💻", Modifier.fontSize(1.5.cssRem).margin(bottom=0.5.cssRem))
+                        SpanText("Clean Code", Modifier.fontSize(0.875.cssRem).fontWeight(FontWeight.Medium).color(Colors.White))
+                    }
                 }
 
                 // Bottom Card
@@ -504,14 +503,14 @@ fun HomePage() {
         ) {
             Column(Modifier.textAlign(TextAlign.Center).margin(bottom=4.cssRem)) {
                 SpanText(
-                    "Our Expertise",
+                    "What We Offer",
                     Modifier.fontSize(2.5.cssRem)
                         .fontWeight(FontWeight.Bold)
                         .margin(bottom=1.cssRem)
                         .color(Colors.White)
                 )
                 SpanText(
-                    "We specialize in cutting-edge Kotlin development, delivering exceptional mobile and cross-platform solutions",
+                    "From full-stack KMP apps to ethical design consulting — we build cross-platform tools with performance and purpose.",
                     Modifier.fontSize(1.25.cssRem)
                         .color(Color.rgb(203, 213, 225))
                         .maxWidth(48.cssRem)
@@ -536,17 +535,19 @@ fun HomePage() {
                     ) {
                         SpanText("📱", Modifier.fontSize(2.cssRem))
                     }
-                    SpanText(
-                        "Android Development",
-                        Modifier.fontSize(1.25.cssRem)
-                            .fontWeight(FontWeight.SemiBold)
-                            .margin(bottom=1.cssRem)
-                            .color(Colors.White)
-                    )
-                    SpanText(
-                        "Native Android apps with modern Kotlin, following Material Design principles for exceptional user experiences.",
-                        Modifier.color(Color.rgb(203, 213, 225)).lineHeight(1.6).fontSize(1.cssRem)
-                    )
+                    Column {
+                        SpanText(
+                            "Android Development",
+                            Modifier.fontSize(1.25.cssRem)
+                                .fontWeight(FontWeight.SemiBold)
+                                .margin(bottom=1.cssRem)
+                                .color(Colors.White)
+                        )
+                        SpanText(
+                            "Beautiful, performant Android apps written in modern Kotlin",
+                            Modifier.color(Color.rgb(203, 213, 225)).lineHeight(1.6).fontSize(1.cssRem)
+                        )
+                    }
                 }
 
                 // Kotlin Multiplatform Service
@@ -564,17 +565,19 @@ fun HomePage() {
                     ) {
                         SpanText("🌍", Modifier.fontSize(2.cssRem))
                     }
-                    SpanText(
-                        "Kotlin Multiplatform",
-                        Modifier.fontSize(1.25.cssRem)
-                            .fontWeight(FontWeight.SemiBold)
-                            .margin(bottom=1.cssRem)
-                            .color(Colors.White)
-                    )
-                    SpanText(
-                        "Share business logic across platforms while maintaining native performance and user experience on every device.",
-                        Modifier.color(Color.rgb(203, 213, 225)).lineHeight(1.6).fontSize(1.cssRem)
-                    )
+                    Column {
+                        SpanText(
+                            "Kotlin Multiplatform",
+                            Modifier.fontSize(1.25.cssRem)
+                                .fontWeight(FontWeight.SemiBold)
+                                .margin(bottom=1.cssRem)
+                                .color(Colors.White)
+                        )
+                        SpanText(
+                            "Write once, run anywhere — build Android, iOS, and Desktop apps from a single Kotlin codebase.",
+                            Modifier.color(Color.rgb(203, 213, 225)).lineHeight(1.6).fontSize(1.cssRem)
+                        )
+                    }
                 }
 
                 // Custom Solutions Service
@@ -592,17 +595,19 @@ fun HomePage() {
                     ) {
                         SpanText("💻", Modifier.fontSize(2.cssRem))
                     }
-                    SpanText(
-                        "Custom Solutions",
-                        Modifier.fontSize(1.25.cssRem)
-                            .fontWeight(FontWeight.SemiBold)
-                            .margin(bottom=1.cssRem)
-                            .color(Colors.White)
-                    )
-                    SpanText(
-                        "Tailored software solutions designed specifically for your business needs, scalable and future-ready.",
-                        Modifier.color(Color.rgb(203, 213, 225)).lineHeight(1.6).fontSize(1.cssRem)
-                    )
+                    Column {
+                        SpanText(
+                            "Custom Solutions",
+                            Modifier.fontSize(1.25.cssRem)
+                                .fontWeight(FontWeight.SemiBold)
+                                .margin(bottom=1.cssRem)
+                                .color(Colors.White)
+                        )
+                        SpanText(
+                            "Need something unique? Let’s design software that fits your needs and values.",
+                            Modifier.color(Color.rgb(203, 213, 225)).lineHeight(1.6).fontSize(1.cssRem)
+                        )
+                    }
                 }
             }
         }
