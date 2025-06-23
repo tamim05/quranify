@@ -122,10 +122,10 @@ jobs:
           rm -f kobweb-*.zip
           rm -f *.js.map
           rm -f kobweb-logo.png
-          rm rf kotlin-js-store
-          rm rf kobweb-0.9.18
-          rm rf build
-          rm rf site
+          rm -rf kotlin-js-store
+          rm -rf kobweb-0.9.18
+          rm -rf build
+          rm -rf site
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
