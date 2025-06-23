@@ -55,6 +55,15 @@ jobs:
       - name: Unzip kobweb
         run: unzip kobweb-${{ env.KOBWEB_CLI_VERSION }}.zip
 
+      - name: Debug project structure
+        run: |
+          echo "Root directory contents:"
+          ls -la
+          echo "Site directory contents:"
+          ls -la site/
+          echo "Looking for build.gradle files:"
+          find . -name "build.gradle*" -type f
+
       - name: Run export
         run: |
           cd site

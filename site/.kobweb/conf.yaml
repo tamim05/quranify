@@ -1,0 +1,14 @@
+site:
+  title: "Quranify - quranic vocabulary"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/kotlin-webpack/js/developmentExecutable/quranify.js"
+      api: "build/libs/quranify.jar"
+    prod:
+      script: "build/kotlin-webpack/js/productionExecutable/quranify.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8080
