@@ -69,13 +69,41 @@ jobs:
           cd site
           ../kobweb-${{ env.KOBWEB_CLI_VERSION }}/bin/kobweb export --notty --layout static
 
+      # Debug and prepare export directory
+      - name: Debug export location
+        run: |
+          echo "Checking for exported files:"
+          ls -la site/.kobweb/ || echo "No .kobweb directory"
+          ls -la site/.kobweb/site/ || echo "No site directory in .kobweb"
+          find site/ -name "*.html" -o -name "*.css" -o -name "*.js" | head -10 || echo "No web files found"
+
+      # Prepare export directory
+      - name: Prepare export files
+        run: |
+          if [ -d "site/.kobweb/site" ] && [ "$(ls -A site/.kobweb/site)" ]; then
+            mkdir -p export
+            cp -r site/.kobweb/site/* export/
+            echo "Export directory contents:"
+            ls -la export/
+          else
+            echo "Error: No files found in site/.kobweb/site/"
+            echo "Available directories in site/.kobweb/:"
+            ls -la site/.kobweb/ || echo "No .kobweb directory found"
+            exit 1
+          fi
+
       # Create orphan release branch
       - name: Create orphan release branch
         run: |
           git checkout --orphan release-temp
           git rm -rf .
-          cp -r export/* .
-          rm -rf export
+          if [ -d "export" ] && [ "$(ls -A export)" ]; then
+            cp -r export/* .
+            rm -rf export
+          else
+            echo "Error: Export directory is empty or doesn't exist"
+            exit 1
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
@@ -88,21 +116,3 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
           git push -f origin HEAD:release
-
-#      # D
-#      - name: Upload site
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: site
-#          path: site/.kobweb/site/
-#          if-no-files-found: error
-#          retention-days: 1
-
-      # Upload artifacts as backup
-      - name: Upload site artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: kobweb-site-${{ github.sha }}
-          path: site/.kobweb/site/
-          if-no-files-found: error
-          retention-days: 1
