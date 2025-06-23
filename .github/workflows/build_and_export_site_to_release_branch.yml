@@ -126,6 +126,7 @@ jobs:
           rm -rf kobweb-0.9.18
           rm -rf build
           rm -rf site
+          rm -rf .gradle
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -137,21 +138,3 @@ jobs:
         run: |
           git remote set-url origin https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push -f origin HEAD:release
-
-      #      # D
-      #      - name: Upload site
-      #        uses: actions/upload-artifact@v4
-      #        with:
-      #          name: site
-      #          path: site/.kobweb/site/
-      #          if-no-files-found: error
-      #          retention-days: 1
-
-      # Upload artifacts as backup
-      - name: Upload site artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: kobweb-site-${{ github.sha }}
-          path: site/.kobweb/site/
-          if-no-files-found: error
-          retention-days: 1
