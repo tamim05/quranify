@@ -1,8 +1,9 @@
 name: Export Static Site to Release Branch
 
 on:
-  push:
-    branches: [main]
+#  push:
+#    branches: [main]
+    workflow_dispatch:
 
 jobs:
   export:
