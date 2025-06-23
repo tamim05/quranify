@@ -3,6 +3,10 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   export_and_upload:
     runs-on: ubuntu-latest
@@ -17,24 +21,38 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
-      # When projects are created on Windows, the executable bit is sometimes lost. So set it back just in case.
+
+      # Ensure Gradle is executable
       - name: Ensure Gradle is executable
         run: chmod +x gradlew
-      # B
+
+      # Setup Gradle with caching
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-      # C
+
+      # Cache browser dependencies for faster builds
       - name: Query Browser Cache ID
         id: browser-cache-id
         run: echo "value=$(./gradlew -q :site:kobwebBrowserCacheId)" >> $GITHUB_OUTPUT
-      # Also C
+
       - name: Cache Browser Dependencies
         uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.browser-cache-id.outputs.value }}
+
+      # Cache Kobweb CLI to avoid repeated downloads
+      - name: Cache Kobweb CLI
+        uses: actions/cache@v4
+        id: kobweb-cache
+        with:
+          path: kobweb-${{ env.KOBWEB_CLI_VERSION }}
+          key: kobweb-cli-${{ env.KOBWEB_CLI_VERSION }}
+
+      # Download Kobweb CLI if not cached
       - name: Fetch kobweb
+        if: steps.kobweb-cache.outputs.cache-hit != 'true'
         uses: robinraju/release-downloader@v1.9
         with:
           repository: "varabyte/kobweb-cli"
@@ -44,45 +62,59 @@ jobs:
           zipBall: false
 
       - name: Unzip kobweb
+        if: steps.kobweb-cache.outputs.cache-hit != 'true'
         run: unzip kobweb-${{ env.KOBWEB_CLI_VERSION }}.zip
 
+      # Debug project structure if needed
+      - name: Debug project structure (on failure)
+        if: failure()
+        run: |
+          echo "Root directory contents:"
+          ls -la
+          echo "Site directory contents:"
+          ls -la site/
+          echo "Build files:"
+          find . -name "build.gradle*" -type f
+
+      # Export the Kobweb site
       - name: Run export
         run: |
           cd site
           if ! ../kobweb-${{ env.KOBWEB_CLI_VERSION }}/bin/kobweb export --notty --layout static; then
-            echo "Export failed"
+            echo "Export failed - check project structure"
             exit 1
           fi
 
-      - name: Copy Exported Files to Temporary Folder
+      # Deploy to release branch
+      - name: Deploy to release branch
         run: |
-          mkdir export
+          # Create export directory and copy files
+          mkdir -p export
           cp -r site/.kobweb/site/* export/
-
-      - name: Create orphan release branch
-        run: |
+          
+          # Create orphan release branch
           git checkout --orphan release-temp
           git rm -rf .
+          
+          # Copy exported files to root
           cp -r export/* .
           rm -rf export
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          
+          # Configure git and commit
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Deploy static site from main"
-
-      - name: Push to release branch using GITHUB_TOKEN
-        env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
+          git commit -m "Deploy static site from main - $(date)"
+          
+          # Push to release branch
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push -f origin HEAD:release
 
-
-      # D - Keep the original upload step as backup
-      - name: Upload site
+      # Upload artifacts as backup
+      - name: Upload site artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: site
+          name: kobweb-site-${{ github.sha }}
           path: site/.kobweb/site/
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 7
