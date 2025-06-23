@@ -69,29 +69,24 @@ jobs:
           cd site
           ../kobweb-${{ env.KOBWEB_CLI_VERSION }}/bin/kobweb export --notty --layout static
 
-      # Deploy to release branch
-      - name: Deploy to release branch
+      # Create orphan release branch
+      - name: Create orphan release branch
         run: |
-          # Create export directory and copy files
-          mkdir -p export
-          cp -r site/.kobweb/site/* export/
-          
-          # Create orphan release branch
           git checkout --orphan release-temp
           git rm -rf .
-          
-          # Copy exported files to root
           cp -r export/* .
           rm -rf export
-          
-          # Configure git and commit
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Deploy static site from main - $(date)"
-          
-          # Push to release branch
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      # Push to release branch using GITHUB_TOKEN
+      - name: Push to release branch using GITHUB_TOKEN
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
           git push -f origin HEAD:release
 
 #      # D
