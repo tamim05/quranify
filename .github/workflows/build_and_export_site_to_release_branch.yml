@@ -102,6 +102,11 @@ jobs:
           fi
 
       # Create orphan release branch
+
+#      about.html              contact.html            kobweb-0.9.18           kotlin-js-store         quranify.js
+#      apps.html               favicon.ico             kobweb-0.9.18.zip       privacy-policy.html     quranify.js.map
+#      build                   index.html              kobweb-logo.png         quranify_logo.png       site
+
       - name: Create orphan release branch
         run: |
           git checkout --orphan release-temp
@@ -113,6 +118,15 @@ jobs:
             echo "Error: Export directory is empty or doesn't exist"
             exit 1
           fi
+          
+          rm -f kobweb-*.zip
+          rm -f *.js.map
+          rm -f kobweb-logo.png
+          rm rf kotlin-js-store
+          rm rf kobweb-0.9.18
+          rm rf build
+          rm rf site
+          
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
