@@ -27,6 +27,6 @@ gradle.settingsEvaluated {
     dependencyResolutionManagement.repositories { kobwebSnapshots() }
 }
 
-rootProject.name = "org"
+rootProject.name = "quranify"
 
 include(":site")

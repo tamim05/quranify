@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.kobwebx.markdown)
 }
 
-group = "optimum_tech.org"
+group = "org.optimum_tech.quranify"
 version = "1.0-SNAPSHOT"
 
 kobweb {
@@ -21,7 +21,7 @@ kobweb {
 kotlin {
     // This example is frontend only. However, for a fullstack app, you can uncomment the includeServer parameter
     // and the `jvmMain` source set below.
-    configAsKobwebApplication("org" /*, includeServer = true*/)
+    configAsKobwebApplication("quranify" /*, includeServer = true*/)
 
     sourceSets {
 //        commonMain.dependencies {
