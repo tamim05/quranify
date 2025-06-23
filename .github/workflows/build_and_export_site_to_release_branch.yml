@@ -1,11 +1,9 @@
 name: Export Kobweb site
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   export_and_upload:
@@ -13,8 +11,10 @@ jobs:
     defaults:
       run:
         shell: bash
+
     env:
       KOBWEB_CLI_VERSION: 0.9.18
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -22,19 +22,20 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      # Ensure Gradle is executable
+      # When projects are created on Windows, the executable bit is sometimes lost. So set it back just in case.
       - name: Ensure Gradle is executable
         run: chmod +x gradlew
 
-      # Setup Gradle with caching
+      # B
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      # Cache browser dependencies for faster builds
-      - name: Query Browser Cache ID
-        id: browser-cache-id
-        run: echo "value=$(./gradlew -q :site:kobwebBrowserCacheId)" >> $GITHUB_OUTPUT
+#      # C
+#      - name: Query Browser Cache ID
+#        id: browser-cache-id
+#        run: echo "value=$(./gradlew -q :site:kobwebBrowserCacheId)" >> $GITHUB_OUTPUT
 
+      # Also C
       - name: Cache Browser Dependencies
         uses: actions/cache@v4
         id: playwright-cache
@@ -42,17 +43,7 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.browser-cache-id.outputs.value }}
 
-      # Cache Kobweb CLI to avoid repeated downloads
-      - name: Cache Kobweb CLI
-        uses: actions/cache@v4
-        id: kobweb-cache
-        with:
-          path: kobweb-${{ env.KOBWEB_CLI_VERSION }}
-          key: kobweb-cli-${{ env.KOBWEB_CLI_VERSION }}
-
-      # Download Kobweb CLI if not cached
       - name: Fetch kobweb
-        if: steps.kobweb-cache.outputs.cache-hit != 'true'
         uses: robinraju/release-downloader@v1.9
         with:
           repository: "varabyte/kobweb-cli"
@@ -62,28 +53,12 @@ jobs:
           zipBall: false
 
       - name: Unzip kobweb
-        if: steps.kobweb-cache.outputs.cache-hit != 'true'
         run: unzip kobweb-${{ env.KOBWEB_CLI_VERSION }}.zip
 
-      # Debug project structure if needed
-      - name: Debug project structure (on failure)
-        if: failure()
-        run: |
-          echo "Root directory contents:"
-          ls -la
-          echo "Site directory contents:"
-          ls -la site/
-          echo "Build files:"
-          find . -name "build.gradle*" -type f
-
-      # Export the Kobweb site
       - name: Run export
         run: |
           cd site
-          if ! ../kobweb-${{ env.KOBWEB_CLI_VERSION }}/bin/kobweb export --notty --layout static; then
-            echo "Export failed - check project structure"
-            exit 1
-          fi
+          ../kobweb-${{ env.KOBWEB_CLI_VERSION }}/bin/kobweb export --notty --layout static
 
       # Deploy to release branch
       - name: Deploy to release branch
@@ -110,6 +85,15 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push -f origin HEAD:release
 
+#      # D
+#      - name: Upload site
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: site
+#          path: site/.kobweb/site/
+#          if-no-files-found: error
+#          retention-days: 1
+
       # Upload artifacts as backup
       - name: Upload site artifacts
         uses: actions/upload-artifact@v4
@@ -117,4 +101,4 @@ jobs:
           name: kobweb-site-${{ github.sha }}
           path: site/.kobweb/site/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 1
