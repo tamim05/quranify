@@ -37,6 +37,12 @@ kotlin {
             // Uncomment the following if you want access to a large set of font-awesome icons:
             // implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
+
+//            implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4"))
+//            implementation("io.github.jan-tennert.supabase:postgrest-kt")
+//            implementation("io.github.jan-tennert.supabase:auth-kt")
+//            implementation("io.github.jan-tennert.supabase:realtime-kt")
+//            implementation("io.github.jan-tennert.supabase:functions-kt:3.1.4")
         }
 
         // Uncomment the following if you pass `includeServer = true` into the `configAsKobwebApplication` call.
