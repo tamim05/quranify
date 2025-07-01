@@ -1,6 +1,5 @@
 package org.optimum_tech.quranify
 
-import com.varabyte.kobweb.compose.css.functions.linearGradient
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
@@ -36,52 +35,52 @@ data class SitePalette(
 object SitePalettes {
     val light = SitePalette(
         // Base colors
-        background = Color.rgb(0xFAFAFA),       // Light gray background
+        background = Color.rgb(0xF8F9FA),       // Lighter gray background
         surface = Color.rgb(0xFFFFFF),          // White cards/surfaces
-        border = Color.rgb(0xE5E7EB),           // Light border
+        border = Color.rgb(0xE9ECEF),           // Lighter border
 
         // Text colors
-        text = Color.rgb(0x1F2937),             // Dark text
-        textMuted = Color.rgb(0x6B7280),        // Gray text
+        text = Color.rgb(0x212529),             // Darker text for better contrast
+        textMuted = Color.rgb(0x6C757D),        // Standard muted gray
         textOnColor = Color.rgb(0xFFFFFF),      // White text on colored backgrounds
 
         // Main colors
-        primary = Color.rgb(0x3B82F6),          // Blue
-        secondary = Color.rgb(0x8B5CF6),        // Purple
+        primary = Color.rgb(0x0D6EFD),          // Bootstrap blue
+        secondary = Color.rgb(0x6C757D),        // Bootstrap secondary gray
 
         // Status colors
-        success = Color.rgb(0x10B981),          // Green
-        warning = Color.rgb(0xF59E0B),          // Orange
-        error = Color.rgb(0xEF4444),            // Red
+        success = Color.rgb(0x198754),          // Bootstrap success green
+        warning = Color.rgb(0xFFC107),          // Bootstrap warning yellow
+        error = Color.rgb(0xDC3545),            // Bootstrap danger red
 
         // Beautiful gradient
-        gradientStart = Color.rgb(0x667EEA),    // Light blue
-        gradientEnd = Color.rgb(0x764BA2),      // Purple
+        gradientStart = Color.rgb(0x0D6EFD),    // Bootstrap blue
+        gradientEnd = Color.rgb(0x6610F2),      // Indigo
     )
 
     val dark = SitePalette(
         // Base colors
-        background = Color.rgb(0x0F172A),       // Dark background
-        surface = Color.rgb(0x1E293B),          // Dark cards/surfaces
-        border = Color.rgb(0x374151),           // Dark border
+        background = Color.rgb(0x0B0C10),       // Very dark background
+        surface = Color.rgb(0x1A1A2E),          // Dark blueish surface
+        border = Color.rgb(0x2C2C44),           // Darker border
 
         // Text colors
-        text = Color.rgb(0xF9FAFB),             // Light text
-        textMuted = Color.rgb(0x9CA3AF),        // Gray text
+        text = Color.rgb(0xE0E0E0),             // Light gray text
+        textMuted = Color.rgb(0x8F8F9E),        // Muted gray
         textOnColor = Color.rgb(0xFFFFFF),      // White text on colored backgrounds
 
         // Main colors
-        primary = Color.rgb(0x60A5FA),          // Light blue
-        secondary = Color.rgb(0xA78BFA),        // Light purple
+        primary = Color.rgb(0x4A90E2),          // Brighter blue
+        secondary = Color.rgb(0xBEBEE2),        // Light purple/blue
 
         // Status colors
-        success = Color.rgb(0x34D399),          // Light green
-        warning = Color.rgb(0xFBBF24),          // Light orange
-        error = Color.rgb(0xF87171),            // Light red
+        success = Color.rgb(0x28A745),          // Green
+        warning = Color.rgb(0xFFC107),          // Yellow
+        error = Color.rgb(0xDC3545),            // Red
 
         // Beautiful gradient
-        gradientStart = Color.rgb(0x667EEA),    // Light blue
-        gradientEnd = Color.rgb(0x764BA2),      // Purple
+        gradientStart = Color.rgb(0x4A90E2),    // Brighter blue
+        gradientEnd = Color.rgb(0x904AE2),      // Purple
     )
 }
 

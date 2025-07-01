@@ -2,7 +2,6 @@ package org.optimum_tech.quranify.components.layouts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.varabyte.kobweb.compose.css.autoLength
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.ColumnScope
@@ -16,13 +15,10 @@ import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import kotlinx.browser.document
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Main
 import org.optimum_tech.quranify.components.sections.Footer
 import org.optimum_tech.quranify.components.sections.NavHeader
 import org.optimum_tech.quranify.toSitePalette
-import org.jetbrains.compose.web.css.FlexDirection
-import org.jetbrains.compose.web.css.FlexWrap
-import org.jetbrains.compose.web.css.vw
 
 class PageLayoutData(val title: String)
 
@@ -33,27 +29,27 @@ fun PageLayout(ctx: PageContext, content: @Composable ColumnScope.() -> Unit) {
     LaunchedEffect(data.title) {
         document.title = "Optimum-Tech.org - ${data.title}"
     }
-    Box (
-        modifier = Modifier.Companion
-            .background(ColorMode.current.toSitePalette().surface.darkened(0.1f))
+
+    Box(
+        Modifier
             .fillMaxSize()
-            .minWidth(90.vw)
-            .margin(leftRight = autoLength),
-        contentAlignment = Alignment.Center){
-        Div(Modifier.fillMaxSize().align(Alignment.Center).toAttrs()){
-            Column (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally){
-                NavHeader()
-                Div(Modifier
-                    .fillMaxWidth()
-                    .flexFlow(FlexDirection.Column, FlexWrap.Wrap)
-                    .padding(top = 1.cssRem, leftRight = 2.cssRem, bottom = 3.cssRem)
-                    .toAttrs()) {
+            .background(ColorMode.current.toSitePalette().background),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            NavHeader()
+            Main(attrs = Modifier.fillMaxSize().toAttrs()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     content()
                 }
-                Footer(Modifier.fillMaxWidth())
             }
+            Footer()
         }
     }
 }
