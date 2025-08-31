@@ -119,6 +119,7 @@ fun DownloadSection() {
 
     Column(
         modifier = Modifier
+            .id("download-section")
             .fillMaxWidth()
             .padding(top = 5.cssRem, bottom = 5.cssRem)
             .backgroundColor(palette.surface),

@@ -578,6 +578,7 @@ private fun FeaturesSection() {
     val palette = ColorMode.current.toSitePalette()
     Column(
         modifier = Modifier
+            .id("features-section")
             .fillMaxWidth()
             .padding(top = 6.cssRem, bottom = 6.cssRem)
             .backgroundColor(palette.background),
