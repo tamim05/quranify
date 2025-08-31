@@ -43,7 +43,7 @@ fun PageLayout(ctx: PageContext, content: @Composable ColumnScope.() -> Unit) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             NavHeader()
-            Main(attrs = Modifier.fillMaxSize().toAttrs()) {
+            Main(attrs = Modifier.toAttrs()) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally

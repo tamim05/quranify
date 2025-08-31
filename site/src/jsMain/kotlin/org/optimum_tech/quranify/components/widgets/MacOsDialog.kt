@@ -154,17 +154,8 @@ fun DownloadSection() {
                 .display(DisplayStyle.Block)
         )
 
-        RowColumnFlex(
+        RowColumnFlexAlternative(
             modifier = Modifier.padding { topBottom(6.px);leftRight(60.px) }.margin(6.px)
-//                .display(DisplayStyle.Grid)
-//                .gap(2.cssRem)
-//                .gridTemplateColumns {
-//                    repeat(
-//                        type = GridEntry.Repeat.Auto.Type.AutoFit
-//                    ) {
-//                        minmax(300.px, 1.fr)
-//                    }
-//                }
         ) {
             platforms.forEach { platform ->
                 PlatformCard(platform) {
@@ -447,6 +438,7 @@ private fun PlatformCard(platform: Platform, onDownload: () -> Unit) {
     val palette = ColorMode.current.toSitePalette()
     Column(
         modifier = PlatformCardStyle.toModifier()
+            .margin(4.px)
             .backgroundColor(palette.background)
             .border(1.px, LineStyle.Solid, palette.border),
         horizontalAlignment = Alignment.CenterHorizontally

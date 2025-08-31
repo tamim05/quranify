@@ -254,17 +254,17 @@ val features = listOf(
 val featureItemStyle = CssStyle {
     base {
         Modifier
-            .backgroundColor(rgba(255, 255, 255, 0.05))
+            .backgroundColor(colorMode.toSitePalette().surface)
             .borderRadius(0.75.cssRem)
             .padding(1.5.cssRem)
             .margin(bottom = 1.cssRem)
-            .border(1.px, LineStyle.Solid, rgba(255, 255, 255, 0.1))
+            .border(1.px, LineStyle.Solid, colorMode.toSitePalette().border)
             .allTransition()
     }
     hover {
         Modifier
-            .backgroundColor(rgba(255, 255, 255, 0.08))
-            .border(1.px, LineStyle.Solid, rgba(255, 255, 255, 0.2))
+            .backgroundColor(colorMode.toSitePalette().surface.darkened(0.3f))
+            .border(1.px, LineStyle.Solid, colorMode.toSitePalette().border)
     }
 }
 
@@ -272,6 +272,7 @@ val mainLayoutStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
+            .height(100.vh)
             .padding(top = 6.cssRem, bottom = 6.cssRem)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
@@ -295,7 +296,6 @@ fun HomeNew() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .backgroundColor(palette.background)
             .color(palette.text),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -580,7 +580,7 @@ private fun FeaturesSection() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 6.cssRem, bottom = 6.cssRem)
-            .backgroundColor(rgba(255, 255, 255, 0.02)),
+            .backgroundColor(palette.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         H2(
@@ -624,6 +624,7 @@ private fun FeaturesSection() {
 
 @Composable
 private fun FeatureItem(feature: Feature) {
+    val pallet = ColorMode.current
     Div(featureItemStyle.toAttrs()) {
         SpanText(
             feature.icon,
@@ -638,7 +639,7 @@ private fun FeatureItem(feature: Feature) {
                 .fontSize(1.3.cssRem)
                 .fontWeight(FontWeight.Bold)
                 .margin(bottom = 0.5.cssRem)
-                .color(Colors.White)
+                .color(pallet.toSitePalette().text)
                 .toAttrs()
         ) {
             Text(feature.title)
@@ -647,7 +648,7 @@ private fun FeatureItem(feature: Feature) {
         P(
             Modifier
                 .fontSize(0.95.cssRem)
-                .color(Color.rgb(203, 213, 225))
+                .color(color = pallet.toSitePalette().text)
                 .lineHeight(1.5)
                 .toAttrs()
         ) {

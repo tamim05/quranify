@@ -5,11 +5,11 @@ import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.framework.annotations.DelicateApi
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Div
 
 @OptIn(DelicateApi::class)
 @Composable
@@ -78,7 +78,7 @@ fun RowColumnFlexAlternative(
 
         Breakpoint.MD, Breakpoint.LG, Breakpoint.XL -> {
             // Custom flex container with wrapping
-            org.jetbrains.compose.web.dom.Div(
+            Div(
                 attrs = {
                     style {
                         display(DisplayStyle.Flex)
