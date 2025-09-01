@@ -2,6 +2,10 @@ package org.optimum_tech.quranify.pages.policy
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.*
+import com.varabyte.kobweb.compose.css.functions.LinearGradient
+import com.varabyte.kobweb.compose.css.functions.blur
+import com.varabyte.kobweb.compose.css.functions.dropShadow
+import com.varabyte.kobweb.compose.css.functions.linearGradient
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -15,10 +19,52 @@ import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.selectors.hover
+import com.varabyte.kobweb.silk.style.toAttrs
+import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import org.optimum_tech.quranify.components.layouts.PageLayoutData
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
-
+import org.optimum_tech.quranify.copy
+import org.optimum_tech.quranify.toSitePalette
+val mirrorBackground = CssStyle{
+    val palette = colorMode.toSitePalette()
+    base {
+        Modifier
+            .fillMaxWidth()
+            .margin(top = 5.cssRem)
+            .backgroundImage(
+                linearGradient(
+                    palette.primary.copy(alpha = 0.1f),
+                    palette.secondary.copy(alpha = 0.1f),
+                    LinearGradient.Direction.ToRight
+                )
+            )
+            .backdropFilter(blur(20.px))
+            .border(1.px, LineStyle.Solid, palette.primary.copy(alpha = 0.3f))
+            .borderRadius(2.cssRem)
+            .padding(3.cssRem)
+            .transition(Transition.of("all", 1.2.s, TransitionTimingFunction.EaseOut))
+            .opacity(0.9)
+            .transform {
+                translateY( 0.px )
+                scale(0.9)
+            }
+            .boxShadow(
+                BoxShadow.of(0.px, 15.px, 40.px, color = rgba(0, 0, 0, 0.1)),
+                BoxShadow.of(0.px, 0.px, 50.px, color = palette.primary.copy(alpha = 0.1f))
+            )
+    }
+    hover{
+        Modifier.transform {
+            translateY( 8.px )
+            scale(1.0)
+        }.opacity(1.0)
+    }
+}
 data class PrivacySection(
     val title: String,
     val emoji: String,
@@ -77,11 +123,18 @@ fun initPrivacyPolicyPage(ctx: InitRouteContext) {
 @Layout(".components.layouts.PageLayout")
 @Composable
 fun PrivacyPolicy() {
+    val palette = ColorMode.current.toSitePalette()
     Div(
         Modifier
             .padding(top = 6.cssRem, bottom = 4.cssRem)
-            .backgroundColor(Color.rgb(15, 23, 42))
-            .color(Colors.White)
+            .backgroundImage(
+                linearGradient(
+                    palette.background,
+                    palette.background.copy(alpha = 0.5f),
+                    LinearGradient.Direction.ToBottom
+                )
+            )
+            .color(palette.text)
             .minHeight(100.vh)
             .toAttrs()
     ) {
@@ -101,7 +154,7 @@ fun PrivacyPolicy() {
                     .toAttrs()
             ) {
                 Column (
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = mirrorBackground.toModifier().color(palette.text),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     SpanText(
@@ -124,7 +177,6 @@ fun PrivacyPolicy() {
                         "Effective Date: December 2024",
                         Modifier
                             .fontSize(1.1.cssRem)
-                            .color(Color.rgb(203, 213, 225))
                             .margin(bottom = 1.cssRem)
                     )
 
@@ -132,7 +184,6 @@ fun PrivacyPolicy() {
                         "Quranify is committed to protecting your privacy. This Privacy Policy explains how your information is collected, used, and safeguarded when you use our app.",
                         Modifier
                             .fontSize(1.1.cssRem)
-                            .color(Color.rgb(203, 213, 225))
                             .lineHeight(1.6)
                             .maxWidth(800.px)
                             .margin(leftRight = autoLength)
@@ -154,14 +205,7 @@ fun PrivacyPolicy() {
             ) {
                 privacySections.forEach { section ->
                     Div(
-                        Modifier
-                            .padding(2.cssRem)
-                            .backgroundColor(rgba(255, 255, 255, 0.05))
-                            .border(1.px, LineStyle.Solid, rgba(255, 255, 255, 0.1))
-                            .borderRadius(1.cssRem)
-                            .boxShadow(BoxShadow.of(0.px, 4.px, 12.px, color = rgba(0, 0, 0, 0.2)))
-                            .transition(Transition.of("transform", 0.3.s))
-                            .toAttrs()
+                        mirrorBackground.toAttrs()
                     ) {
                         Column {
                             SpanText(
@@ -180,12 +224,13 @@ fun PrivacyPolicy() {
                                     .fontWeight(FontWeight.SemiBold)
                                     .margin(bottom = 1.cssRem)
                                     .textAlign(TextAlign.Center)
+                                    .color(palette.text)
                             )
 
                             SpanText(
                                 section.content,
                                 Modifier
-                                    .color(Color.rgb(203, 213, 225))
+                                    .color(palette.textMuted)
                                     .fontSize(0.95.cssRem)
                                     .lineHeight(1.6)
                                     .textAlign(TextAlign.Left)
@@ -218,7 +263,7 @@ fun PrivacyPolicy() {
                 SpanText(
                     "We may update this policy in the future. All updates will be posted within the app or on our official website.",
                     Modifier
-                        .color(Color.rgb(203, 213, 225))
+                        .color(palette.text)
                         .fontSize(1.cssRem)
                         .lineHeight(1.6)
                 )

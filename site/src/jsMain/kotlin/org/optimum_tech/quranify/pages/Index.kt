@@ -44,6 +44,7 @@ import org.optimum_tech.quranify.components.layouts.PageLayoutData
 import org.optimum_tech.quranify.components.widgets.DownloadSection
 import org.optimum_tech.quranify.components.widgets.RowColumnFlex
 import org.optimum_tech.quranify.components.widgets.RowColumnFlexAlternative
+import org.optimum_tech.quranify.copy
 import org.optimum_tech.quranify.toSitePalette
 
 // region Styles and Data
@@ -301,7 +302,13 @@ fun HomeNew() {
 
     Column(
         modifier = Modifier
-            .backgroundColor(palette.background)
+            .backgroundImage(
+                linearGradient(
+                    palette.background.copy(alpha = 0.5f),
+                    palette.surface.copy(alpha = 0.5f),
+                    LinearGradient.Direction.ToBottom
+                )
+            )
             .color(palette.text),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -318,10 +325,10 @@ private fun HeroSection() {
     Box(
         modifier = mainLayoutStyle.toModifier()
             .backgroundImage(
-                radialGradient(
-                    palette.background,
-                    palette.background.darkened(0.5f),
-                    RadialGradient.Shape.Circle
+                linearGradient(
+                    palette.background.copy(alpha = 0.6f),
+                    palette.surface.copy(alpha = 0.7f),
+                    LinearGradient.Direction.ToBottom
                 )
             ),
         contentAlignment = Alignment.Center

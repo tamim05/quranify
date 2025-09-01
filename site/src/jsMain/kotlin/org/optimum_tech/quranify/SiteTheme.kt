@@ -7,6 +7,9 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.palette.background
 import com.varabyte.kobweb.silk.theme.colors.palette.color
 
+fun Color.copy(alpha: Float): Color{
+    return this.toRgb().copyf(alpha = alpha)
+}
 data class SitePalette(
     // Base colors
     val background: Color,
