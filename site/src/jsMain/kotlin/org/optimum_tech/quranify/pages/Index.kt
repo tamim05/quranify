@@ -385,7 +385,7 @@ private fun HeroText() {
     H2(
         Modifier
             .fontSize(1.8.cssRem)
-            .color(palette.textOnColor)
+            .color(palette.text)
             .margin(bottom = 1.5.cssRem)
             .lineHeight(1.4)
             .fontWeight(FontWeight.SemiBold)
@@ -398,7 +398,7 @@ private fun HeroText() {
     P(
         Modifier
             .fontSize(1.1.cssRem)
-            .color(palette.textOnColor)
+            .color(palette.text)
             .margin(bottom = 2.5.cssRem)
             .lineHeight(1.6)
             .textAlign(TextAlign.Center)
