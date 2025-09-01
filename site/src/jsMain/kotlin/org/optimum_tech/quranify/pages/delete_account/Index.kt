@@ -306,6 +306,7 @@ fun DeleteAccount() {
 
                             Div(
                                 Modifier
+                                    .width(100.percent)
                                     .display(DisplayStyle.Flex)
                                     .flexDirection(FlexDirection.Column)
                                     .gap(1.5.cssRem)
@@ -314,6 +315,7 @@ fun DeleteAccount() {
                                 Input(
                                     type = InputType.Email,
                                     attrs = Modifier
+                                        .fillMaxWidth()
                                         .padding(1.cssRem)
                                         .fontSize(1.cssRem)
                                         .width(100.percent)
@@ -331,6 +333,7 @@ fun DeleteAccount() {
                                 Input(
                                     type = InputType.Password,
                                     attrs = Modifier
+                                        .fillMaxWidth()
                                         .padding(1.cssRem)
                                         .fontSize(1.cssRem)
                                         .width(100.percent)
@@ -431,6 +434,7 @@ fun DeleteAccount() {
                                 Input(
                                     type = InputType.Text,
                                     attrs = Modifier
+                                        .fillMaxWidth()
                                         .padding(1.cssRem)
                                         .fontSize(1.5.cssRem)
                                         .width(100.percent)

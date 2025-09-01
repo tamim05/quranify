@@ -586,7 +586,8 @@ private fun ContactSection(isMobile: Boolean, palette: SitePalette) {
             .boxShadow(
                 BoxShadow.of(0.px, 15.px, 40.px, color = rgba(0, 0, 0, 0.1)),
                 BoxShadow.of(0.px, 0.px, 50.px, color = palette.primary.copy(alpha = 0.1f))
-            )
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -632,9 +633,9 @@ private fun ContactSection(isMobile: Boolean, palette: SitePalette) {
                     .flexWrap(FlexWrap.Wrap)
                     .justifyContent(JustifyContent.Center)
             ) {
-                ContactButton("📧", "Email", "mailto:contact@optimum-tech.org")
+                ContactButton("📧", "Email", "mailto:mailto.optimumtech@gmail.com")
                 ContactButton("💼", "LinkedIn", "#")
-                ContactButton("🐙", "GitHub", "https://github.com/tamim05")
+                ContactButton("🐙", "GitHub", "https://naser09.github.io")
             }
         }
     }

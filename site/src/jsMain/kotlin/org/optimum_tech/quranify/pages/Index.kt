@@ -392,7 +392,7 @@ private fun HeroText() {
             .textAlign(TextAlign.Center)
             .toAttrs()
     ) {
-        Text("Master Quranic Arabic with Beautiful Flashcards")
+        Text("Master Quranic Vocabulary with Beautiful Flashcards")
     }
 
     P(
