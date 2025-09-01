@@ -17,6 +17,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.data.add
@@ -36,11 +37,13 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.AlignSelf
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.dom.*
 import org.optimum_tech.quranify.components.layouts.PageLayoutData
 import org.optimum_tech.quranify.components.widgets.DownloadSection
 import org.optimum_tech.quranify.components.widgets.RowColumnFlex
+import org.optimum_tech.quranify.components.widgets.RowColumnFlexAlternative
 import org.optimum_tech.quranify.toSitePalette
 
 // region Styles and Data
@@ -156,98 +159,101 @@ val macOSSteps = listOf(
 
 val screenshotSlides = listOf(
     ScreenshotSlide(
-        title = "Beautiful Flashcards",
-        description = "Interactive Arabic vocabulary cards with pronunciation guides",
+        title = "Home Page",
+        description = "Track your progress, daily streaks, and current learning level at a glance.",
         imageUrl = "/screenshot/screenshot_1.jpg"
     ),
     ScreenshotSlide(
-        title = "Progress Tracking",
-        description = "Track your learning journey with detailed analytics",
+        title = "Memorize Vocabulary",
+        description = "Review and memorize Quranic words with interactive word lists.",
         imageUrl = "/screenshot/screenshot_2.jpg"
     ),
     ScreenshotSlide(
-        title = "Dark Mode Interface",
-        description = "Easy on the eyes for extended study sessions",
+        title = "Tags & Filters",
+        description = "Learn by Surah, Juz, and Tags. Premium users unlock Ayah-level tagging.",
         imageUrl = "/screenshot/screenshot_3.jpg"
     ),
     ScreenshotSlide(
-        title = "Spaced Repetition",
-        description = "Smart algorithm optimizes your review schedule",
+        title = "Flashcards",
+        description = "Engage with beautiful flashcards designed for Quranic Arabic memorization.",
         imageUrl = "/screenshot/screenshot_4.jpg"
     ),
     ScreenshotSlide(
-        title = "Verse Context",
-        description = "Learn vocabulary with Quranic verse context",
+        title = "Quiz Mode",
+        description = "Test your knowledge with interactive multiple-choice quizzes.",
         imageUrl = "/screenshot/screenshot_5.jpg"
     ),
     ScreenshotSlide(
-        title = "Beautiful Flashcards",
-        description = "Interactive Arabic vocabulary cards with pronunciation guides",
+        title = "Answer Feedback",
+        description = "Get instant feedback with a green checkmark when you answer correctly.",
         imageUrl = "/screenshot/screenshot_6.jpg"
     ),
     ScreenshotSlide(
-        title = "Progress Tracking",
-        description = "Track your learning journey with detailed analytics",
+        title = "Updated Progress",
+        description = "See your updated stats and progress after each quiz session.",
         imageUrl = "/screenshot/screenshot_7.jpg"
     ),
     ScreenshotSlide(
-        title = "Dark Mode Interface",
-        description = "Easy on the eyes for extended study sessions",
+        title = "Review Options",
+        description = "Choose from multiple review modes: flashcards, matcher, timed quiz, reverse quiz, and more.",
         imageUrl = "/screenshot/screenshot_8.jpg"
     ),
     ScreenshotSlide(
-        title = "Spaced Repetition",
-        description = "Smart algorithm optimizes your review schedule",
+        title = "Left-Right Matcher",
+        description = "Match Arabic words with their meanings in an engaging review exercise.",
         imageUrl = "/screenshot/screenshot_9.jpg"
     ),
     ScreenshotSlide(
-        title = "Verse Context",
-        description = "Learn vocabulary with Quranic verse context",
+        title = "Surah Tafseer",
+        description = "Browse and explore detailed tafseer organized by Surah.",
         imageUrl = "/screenshot/screenshot_10.jpg"
     ),
     ScreenshotSlide(
-        title = "Beautiful Flashcards",
-        description = "Interactive Arabic vocabulary cards with pronunciation guides",
+        title = "Settings & Profile",
+        description = "Manage your profile, change language, daily targets, timezone, and account settings.",
         imageUrl = "/screenshot/screenshot_11.jpg"
-    ),
-    ScreenshotSlide(
-        title = "Progress Tracking",
-        description = "Track your learning journey with detailed analytics",
-        imageUrl = "/screenshot/screenshot_12.jpg"
     )
 )
-
-
 val features = listOf(
+    Feature(
+    icon = "📚",
+    title = "Quran Word Collection",
+    description = "Explore all 77,430 words of the Quran, including 21,296 unique words, to build a deep vocabulary foundation."
+    ),
     Feature(
         icon = "🧠",
         title = "Spaced Repetition System",
-        description = "Advanced algorithm that shows you words exactly when you're about to forget them, maximizing retention efficiency."
+        description = "Memorize effectively with a scientifically proven system that shows words right before you forget them."
     ),
     Feature(
         icon = "📖",
-        title = "Quranic Context",
-        description = "Every word is presented with its original Quranic verse, helping you understand usage and meaning in context."
+        title = "Learn with Quranic Context",
+        description = "Each word is linked to its verse in the Quran, with translations and tafseer in multiple languages."
+    ),
+    Feature(
+        icon = "🎯",
+        title = "Structured Learning Paths",
+        description = "Learn by frequency, Surah, Juz, Ayah, or topic—progressively building your Quranic vocabulary."
+    ),
+    Feature(
+        icon = "📊",
+        title = "Track Your Progress",
+        description = "Daily goals, streaks, and XP keep you motivated, while detailed analytics show your improvement."
+    ),
+    Feature(
+        icon = "🌍",
+        title = "Multilingual Support",
+        description = "Access translations and tafseer in 7+ languages including Urdu, English, Bengali, Hindi, Persian, Turkish, and Indonesian."
+    ),
+    Feature(
+        icon = "🌙",
+        title = "Beautiful & Accessible Design",
+        description = "Optimized for Arabic readability with dark mode support and a clean, distraction-free interface."
     ),
     Feature(
         icon = "🔄",
         title = "Cross-Platform Sync",
-        description = "Study on any device - your progress syncs seamlessly across Android, iOS, Windows, macOS, and Linux."
-    ),
-    Feature(
-        icon = "🎯",
-        title = "Progressive Learning",
-        description = "Start with the most common words and gradually build your vocabulary with structured learning paths."
-    ),
-    Feature(
-        icon = "📊",
-        title = "Detailed Analytics",
-        description = "Track your learning progress, see your strengths and areas for improvement with comprehensive statistics."
-    ),
-    Feature(
-        icon = "🌙",
-        title = "Beautiful Design",
-        description = "Clean, distraction-free interface with dark mode support, designed specifically for Arabic text readability."
+        description = "Learn anywhere—your progress syncs seamlessly across Android, iOS, Web, Windows, macOS, and Linux."
     )
 )
 
@@ -272,8 +278,7 @@ val mainLayoutStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
-            .height(100.vh)
-            .padding(top = 6.cssRem, bottom = 6.cssRem)
+            .minHeight(100.vh) // Changed from height to minHeight
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
             .gap(4.cssRem)
@@ -324,16 +329,20 @@ private fun HeroSection() {
         RowColumnFlex(
             modifier = Modifier.fillMaxWidth()
         ) {
+            //true if mobile view
             Column(
-                modifier = Modifier.width(50.percent).padding(2.cssRem),
+                modifier = Modifier
+                    .width(if (it) 90.percent else 50.percent).padding(2.cssRem)
+                    .thenIf(it, Modifier.fillMaxHeight())
+                ,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = if (it) Arrangement.SpaceBetween else Arrangement.Center
             ) {
                 HeroText()
                 CtaButtons()
                 Stats()
             }
-            ScreenshotCarousel(screenshotSlides)
+            ScreenshotCarousel(screenshotSlides){ it }
         }
     }
 }
@@ -450,8 +459,8 @@ private fun Stats() {
             .flexWrap(FlexWrap.Wrap)
             .justifyContent(JustifyContent.Center)
     ) {
-        Stat("5000+", "Arabic Words", palette.success)
-        Stat("10K+", "Active Users", palette.primary)
+        Stat("77,430", "Total Words", palette.success)
+        Stat("21,296", "Unique Words", palette.primary)
         Stat("5 ⭐", "User Rating", palette.warning)
     }
 }
@@ -478,7 +487,7 @@ private fun Stat(value: String, label: String, color: CSSColorValue) {
 }
 
 @Composable
-private fun ScreenshotCarousel(slides: List<ScreenshotSlide>) {
+private fun ScreenshotCarousel(slides: List<ScreenshotSlide>,isMobile:()-> Boolean) {
     var currentSlide by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
@@ -491,10 +500,11 @@ private fun ScreenshotCarousel(slides: List<ScreenshotSlide>) {
     Box(
         modifier = Modifier
             .position(Position.Relative)
-            .width(320.px)
-            .height(500.px)
+            .aspectRatio(width = 9, height = 16)
+            .maxWidth(if (isMobile()) 85.vw else 30.vw)
+            .maxHeight(if (isMobile()) 90.vh else 65.vh)
             .borderRadius(2.cssRem)
-            .overflow(Overflow.Hidden)
+            .overflow(Overflow.Visible)
             .boxShadow(BoxShadow.of(0.px, 25.px, 50.px, color = rgba(0, 0, 0, 0.4))),
         contentAlignment = Alignment.BottomCenter
     ) {

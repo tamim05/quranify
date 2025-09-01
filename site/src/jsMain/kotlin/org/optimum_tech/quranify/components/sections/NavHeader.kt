@@ -12,6 +12,7 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
@@ -150,7 +151,9 @@ private fun MenuItems() {
     fun navModifier(path: String): Modifier {
         val isSelected = currentPath == path
         return NavLinkStyle.toModifier()
-            .onClick { ctx.router.navigateTo(path) }
+            .onClick {
+                ctx.router.navigateTo(path)
+            }
             .then(if (isSelected) Modifier.classNames("selected") else Modifier)
     }
 
@@ -280,6 +283,17 @@ fun NavHeader() {
 @Composable
 private fun SideMenu(menuState: SideMenuState, close: () -> Unit, onAnimationEnd: () -> Unit) {
     val colorMode by ColorMode.currentState
+    val ctx = rememberPageContext()
+    val currentPath = ctx.route.path
+
+    @Composable
+    fun navModifier(path: String): Modifier {
+        val isSelected = currentPath == path
+        return NavLinkStyle.toModifier()
+            .onClick { ctx.router.navigateTo(path) }
+            .then(if (isSelected) Modifier.classNames("selected") else Modifier)
+    }
+
     Overlay(
         Modifier
             .setVariable(OverlayVars.BackgroundColor, colorMode.toSitePalette().background.darkened(byPercent = 0.5f))
@@ -328,12 +342,15 @@ private fun SideMenu(menuState: SideMenuState, close: () -> Unit, onAnimationEnd
                             .margin(topBottom = 1.cssRem)
                             .toAttrs()
                     )
-
+                    Link("/contact", text = "Contact Me" , modifier = navModifier("/contact").then(Modifier.onClick { close() }))
                     Button(
-                        onClick = { window.open("#download") },
+                        onClick = {
+                            window.open("#download-section", target = "_self")
+                            close()
+                                  },
                         CTAButtonStyle.toModifier().alignSelf(org.jetbrains.compose.web.css.AlignSelf.Stretch)
                     ) {
-                        Text("Get Started")
+                        Text("Download")
                     }
                 }
             }

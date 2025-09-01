@@ -15,29 +15,31 @@ import org.jetbrains.compose.web.dom.Div
 @Composable
 fun RowColumnFlex(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit = {}
+    content: @Composable (Boolean) -> Unit = {}
 ) {
     val breakpoint = rememberBreakpoint()
 
     when (breakpoint) {
         Breakpoint.ZERO -> Column(
             modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            content()
+            content(true)
         }
 
         Breakpoint.SM -> Column(
             modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            content()
+            content(true)
         }
 
         Breakpoint.MD, Breakpoint.LG, Breakpoint.XL -> {
             // Use CSS Flexbox with wrap for responsive row layout
             androidx.compose.runtime.key("flex-container") {
-                org.jetbrains.compose.web.dom.Div(
+                Div(
                     attrs = {
                         style {
                             display(DisplayStyle.Flex)
@@ -50,7 +52,7 @@ fun RowColumnFlex(
                         }
                     }
                 ) {
-                    content()
+                    content(false)
                 }
             }
         }
