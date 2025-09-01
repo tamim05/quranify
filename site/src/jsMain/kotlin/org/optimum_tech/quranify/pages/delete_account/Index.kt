@@ -40,13 +40,15 @@ import org.w3c.fetch.RequestMode
 import kotlin.js.Json
 import kotlin.js.json
 
-private const val ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2b250bnRla3Rsa255aGN5a3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3NjU2NTAsImV4cCI6MjA2NDM0MTY1MH0.WNnNSesClOn2W3FXPFCHiVdbQfFw65BwSX6DlXcwqmw"
-
+private val HOST_BETA="https://xvontntektlknyhcykpg.supabase.co"
+private const val ANON_KEY_BETA = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2b250bnRla3Rsa255aGN5a3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3NjU2NTAsImV4cCI6MjA2NDM0MTY1MH0.WNnNSesClOn2W3FXPFCHiVdbQfFw65BwSX6DlXcwqmw"
+private const val HOST = "https://wgjitktuzvxgfztrsxyd.supabase.co"
+private const val ANON_KEY = "sb_publishable_bTSjUGNGqfHDPsN5WB3ifQ_qr_iggGd"
 suspend fun requestDeleteAccount(email: String, password: String): Result<String> {
     return try {
             val login = try {
                 window.fetch(
-                    input = "https://xvontntektlknyhcykpg.supabase.co/auth/v1/token?grant_type=password",
+                    input = "$HOST/auth/v1/token?grant_type=password",
                     init = RequestInit(
                         method = "POST",
                         headers = Headers().apply {
@@ -74,7 +76,7 @@ suspend fun requestDeleteAccount(email: String, password: String): Result<String
         }
         window.localStorage.set("delete_token",token)
         val response = window.fetch(
-            "https://xvontntektlknyhcykpg.supabase.co/functions/v1/request-delete-account/",
+            "$HOST/functions/v1/request-delete-account/",
             object : RequestInit {
                 override var method: String? = "POST"
                 override var headers = Headers().apply {
@@ -112,7 +114,7 @@ suspend fun verifyDeleteAccount(otp: String): Result<String> {
             throw RuntimeException("Please refresh this page,")
         }
         val response = window.fetch(
-            "https://xvontntektlknyhcykpg.supabase.co/functions/v1/verify-delete-account",
+            "$HOST/functions/v1/verify-delete-account",
             object : RequestInit {
                 override var method: String? = "POST"
                 override var headers = Headers().apply {

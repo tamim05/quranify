@@ -46,7 +46,6 @@ import org.optimum_tech.quranify.pages.allTransition
 import org.optimum_tech.quranify.toSitePalette
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
-
 val NavBarStyle = CssStyle.base {
     Modifier
         .fillMaxWidth()
@@ -136,6 +135,7 @@ val NavLinkStyle = CssStyle {
     cssRule(".selected") {
         Modifier
             .color(colorMode.toSitePalette().primary)
+            .border(3.px, style = LineStyle.Double ,color = colorMode.toSitePalette().secondary)
             .fontWeight(FontWeight.SemiBold)
     }
 }
@@ -144,6 +144,7 @@ val NavLinkStyle = CssStyle {
 private fun MenuItems() {
     val ctx = rememberPageContext()
     val currentPath = ctx.route.path
+    val colorMode = ColorMode.current.toSitePalette()
 
     @Composable
     fun navModifier(path: String): Modifier {
@@ -154,7 +155,7 @@ private fun MenuItems() {
     }
 
     Link("/", "Home", navModifier("/"))
-    Link("/apps", "Apps", navModifier("/apps"))
+    Link("/delete-account", "Delete Account", navModifier("/delete-account").color(color = colorMode.warning))
     Link("/privacy-policy", "Policy", navModifier("/privacy-policy"))
     Link("/about", "About", navModifier("/about"))
 }
