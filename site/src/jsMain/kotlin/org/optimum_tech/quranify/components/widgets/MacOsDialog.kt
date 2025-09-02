@@ -31,74 +31,6 @@ import org.optimum_tech.quranify.pages.Platform
 import org.optimum_tech.quranify.pages.macOSSteps
 import org.optimum_tech.quranify.pages.platforms
 import org.optimum_tech.quranify.toSitePalette
-import kotlin.collections.emptyList
-import kotlin.js.Date
-
-private const val CACHE_KEY_DATA = "latestReleaseLinks"
-private const val CACHE_KEY_TIME = "latestReleaseTime"
-
-suspend fun getAndCacheLatestVersion(platforms: List<Platform>): List<Platform> {
-    val now = Date().getTime()
-
-    // Check cache
-    val lastFetchedAt = window.localStorage.getItem(CACHE_KEY_TIME)?.toDoubleOrNull()
-    val cacheValid = lastFetchedAt?.let { (now - it) < 30 * 60 * 1000 } ?: false
-
-    var links: Map<String, String>? = null
-
-    if (cacheValid) {
-        // Load from localStorage
-        val cachedJson = window.localStorage.getItem(CACHE_KEY_DATA)
-        if (cachedJson != null) {
-            links = JSON.parse<Map<String, String>>(cachedJson)
-        }
-    }
-
-    if (links == null) {
-        // Fetch from GitHub
-        val response = window.fetch(
-            "https://github.com/tamim05/QuranVocabulary/releases/latest/download/latest-release.txt"
-        ).await()
-
-        if (response.ok) {
-            val text = response.text().await()
-            val parsed = mutableMapOf<String, String>()
-
-            text.lines().map { it.trim() }.forEach { link ->
-                when {
-                    link.endsWith(".msi") -> parsed["windows"] = link
-                    link.endsWith(".deb") -> parsed["linux"] = link
-                    link.endsWith(".dmg") -> parsed["macos"] = link
-                }
-            }
-
-            links = parsed
-
-            // Save to localStorage
-            window.localStorage.setItem(CACHE_KEY_DATA, JSON.stringify(parsed))
-            window.localStorage.setItem(CACHE_KEY_TIME, now.toString())
-        }
-    }
-
-    if (links == null) return platforms
-
-    // Update platforms with cached/fetched links
-    return platforms.map { platform ->
-        when {
-            platform.name.contains("Windows", ignoreCase = true) ->
-                platform.copy(downloadLink = links["windows"] ?: platform.downloadLink)
-
-            platform.name.contains("Linux", ignoreCase = true) ->
-                platform.copy(downloadLink = links["linux"] ?: platform.downloadLink)
-
-            platform.name.contains("Mac", ignoreCase = true) ||
-                    platform.name.contains("OSX", ignoreCase = true) ->
-                platform.copy(downloadLink = links["macos"] ?: platform.downloadLink)
-
-            else -> platform
-        }
-    }
-}
 
 // CSS Styles for hover effects
 val PlatformCardStyle = CssStyle {
@@ -181,12 +113,7 @@ val PlayStoreImageStyle = CssStyle {
 fun DownloadSection() {
     val palette = ColorMode.current.toSitePalette()
     var showMacOSGuide by remember { mutableStateOf(false) }
-    val platformState = remember {
-        mutableStateOf<List<Platform>>(emptyList())
-    }
-    LaunchedEffect(Unit){
-        platformState.value = getAndCacheLatestVersion(platforms)
-    }
+
     Column(
         modifier = Modifier
             .id("download-section")
@@ -228,7 +155,7 @@ fun DownloadSection() {
         RowColumnFlexAlternative(
             modifier = Modifier.padding { topBottom(6.px);leftRight(60.px) }.margin(6.px)
         ) {
-            platformState.value.ifEmpty { platforms }.forEach { platform ->
+            platforms.forEach { platform ->
                 PlatformCard(platform) {
                     if (platform.name.lowercase().contains("mac")) {
                         showMacOSGuide = true

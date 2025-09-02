@@ -40,8 +40,8 @@ import org.w3c.fetch.RequestMode
 import kotlin.js.Json
 import kotlin.js.json
 
-private val HOST_BETA="https://xvontntektlknyhcykpg.supabase.co"
-private const val ANON_KEY_BETA = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2b250bnRla3Rsa255aGN5a3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3NjU2NTAsImV4cCI6MjA2NDM0MTY1MH0.WNnNSesClOn2W3FXPFCHiVdbQfFw65BwSX6DlXcwqmw"
+private val HOST_BETA by lazy { "https://xvontntektlknyhcykpg.supabase.co" }
+private val ANON_KEY_BETA by lazy { "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2b250bnRla3Rsa255aGN5a3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3NjU2NTAsImV4cCI6MjA2NDM0MTY1MH0.WNnNSesClOn2W3FXPFCHiVdbQfFw65BwSX6DlXcwqmw" }
 private const val HOST = "https://wgjitktuzvxgfztrsxyd.supabase.co"
 private const val ANON_KEY = "sb_publishable_bTSjUGNGqfHDPsN5WB3ifQ_qr_iggGd"
 suspend fun requestDeleteAccount(email: String, password: String): Result<String> {
@@ -208,7 +208,7 @@ fun DeleteAccount() {
             ) {
                 Column {
                     SpanText(
-                        "⚠️ Delete Account",
+                        "⚠️ Delete Quranify Account",
                         Modifier
                             .fontSize(2.cssRem)
                             .fontWeight(FontWeight.Bold)
@@ -217,7 +217,7 @@ fun DeleteAccount() {
                     )
 
                     SpanText(
-                        "This action is permanent and cannot be undone. All your data, settings, and content will be permanently deleted.",
+                        "This action is permanent and cannot be undone. All your data in quranify app will be permanently deleted.",
                         Modifier
                             .fontSize(1.cssRem)
                             .lineHeight(1.6)
