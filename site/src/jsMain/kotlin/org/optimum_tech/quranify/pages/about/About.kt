@@ -633,8 +633,8 @@ private fun ContactSection(isMobile: Boolean, palette: SitePalette) {
                     .flexWrap(FlexWrap.Wrap)
                     .justifyContent(JustifyContent.Center)
             ) {
-                ContactButton("📧", "Email", "mailto:mailto.optimumtech@gmail.com")
-                ContactButton("💼", "LinkedIn", "#")
+                ContactButton("📧", "Email", "mailto:contact@optimum-tech.org")
+                ContactButton("💼", "LinkedIn", "https://www.linkedin.com/company/optimum-tech-org")
                 ContactButton("🐙", "GitHub", "https://naser09.github.io")
             }
         }
