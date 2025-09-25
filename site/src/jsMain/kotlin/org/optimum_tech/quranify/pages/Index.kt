@@ -93,21 +93,21 @@ val platforms = listOf(
         name = "Windows",
         emoji = "🪟",
         status = "Available",
-        downloadLink = "https://github.com/tamim05/QuranVocabulary/releases/download/v1.1.0/quran-vocabulary-1.1.0.msi",
+        downloadLink = "https://github.com/tamim05/QuranVocabulary/releases/latest/download/QuranVocabulary-Windows.msi",
         description = "Download MSI installer"
     ),
     Platform(
         name = "macOS",
         emoji = "🍎",
         status = "Available",
-        downloadLink = "https://github.com/tamim05/QuranVocabulary/releases/download/v1.1.0/quran-vocabulary-1.1.0.dmg",
+        downloadLink = "https://github.com/tamim05/QuranVocabulary/releases/latest/download/QuranVocabulary-macOS.dmg",
         description = "Download DMG installer"
     ),
     Platform(
         name = "Linux",
         emoji = "🐧",
         status = "Available",
-        downloadLink = "https://github.com/tamim05/QuranVocabulary/releases/download/v1.1.0/quran-vocabulary-1.1.0.deb",
+        downloadLink = "https://github.com/tamim05/QuranVocabulary/releases/latest/download/QuranVocabulary-Linux.deb",
         description = "Download DEB package"
     ),
     Platform(

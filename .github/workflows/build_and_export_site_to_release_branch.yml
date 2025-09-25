@@ -84,16 +84,25 @@ jobs:
           echo "Checking for exported files:"
           ls -la site/.kobweb/ || echo "No .kobweb directory"
           ls -la site/.kobweb/site/ || echo "No site directory in .kobweb"
+          echo "Checking resources folder:"
+          ls -la site/.kobweb/site/resources/ || echo "No resources directory"
+          echo "Checking screenshot folder:"
+          ls -la site/.kobweb/site/resources/screenshot/ || echo "No screenshot directory"
           find site/ -name "*.html" -o -name "*.css" -o -name "*.js" | head -10 || echo "No web files found"
 
-      # Prepare export directory
+      # Prepare export directory with better copying
       - name: Prepare export files
         run: |
           if [ -d "site/.kobweb/site" ] && [ "$(ls -A site/.kobweb/site)" ]; then
             mkdir -p export
-            cp -r site/.kobweb/site/* export/
+            # Use rsync for better file copying (preserves structure and permissions)
+            rsync -av site/.kobweb/site/ export/
             echo "Export directory contents:"
-            ls -la export/
+            find export/ -type f | head -20
+            echo "Export resources contents:"
+            ls -la export/resources/ || echo "No resources in export"
+            echo "Export screenshot contents:"
+            ls -la export/resources/screenshot/ || echo "No screenshot in export"
           else
             echo "Error: No files found in site/.kobweb/site/"
             echo "Available directories in site/.kobweb/:"
@@ -101,32 +110,41 @@ jobs:
             exit 1
           fi
 
-      # Create orphan release branch
-
-#      about.html              contact.html            kobweb-0.9.18           kotlin-js-store         quranify.js
-#      apps.html               favicon.ico             kobweb-0.9.18.zip       privacy-policy.html     quranify.js.map
-#      build                   index.html              kobweb-logo.png         quranify_logo.png       site
-
+      # Create orphan release branch with improved cleanup
       - name: Create orphan release branch
         run: |
           git checkout --orphan release-temp
           git rm -rf .
+          
           if [ -d "export" ] && [ "$(ls -A export)" ]; then
-            cp -r export/* .
+            # Use rsync instead of cp for better copying
+            rsync -av export/ ./
             rm -rf export
           else
             echo "Error: Export directory is empty or doesn't exist"
             exit 1
           fi
           
-          rm -f kobweb-*.zip
-          rm -f *.js.map
-          rm -f kobweb-logo.png
-          rm -rf kotlin-js-store
-          rm -rf kobweb-0.9.18
-          rm -rf build
-          rm -rf site
-          rm -rf .gradle
+          # Verify resources were copied correctly
+          echo "Verifying copied files:"
+          ls -la resources/ || echo "No resources directory after copy"
+          ls -la resources/screenshot/ || echo "No screenshot directory after copy"
+          
+          # Clean up only specific build artifacts from root level
+          # Don't use wildcards that might affect subdirectories
+          [ -f "kobweb-${{ env.KOBWEB_CLI_VERSION }}.zip" ] && rm -f "kobweb-${{ env.KOBWEB_CLI_VERSION }}.zip"
+          [ -d "kotlin-js-store" ] && rm -rf kotlin-js-store
+          [ -d "kobweb-${{ env.KOBWEB_CLI_VERSION }}" ] && rm -rf "kobweb-${{ env.KOBWEB_CLI_VERSION }}"
+          [ -d "build" ] && rm -rf build
+          [ -d "site" ] && rm -rf site
+          [ -d ".gradle" ] && rm -rf .gradle
+          
+          # Final verification
+          echo "Final directory structure:"
+          find . -type f | head -20
+          echo "Final resources check:"
+          ls -la resources/ || echo "Resources missing!"
+          ls -la resources/screenshot/ || echo "Screenshot folder missing!"
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

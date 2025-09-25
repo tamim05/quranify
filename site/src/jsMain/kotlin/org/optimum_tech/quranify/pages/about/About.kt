@@ -229,8 +229,7 @@ fun About() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.cssRem, bottom = 4.cssRem)
-                .zIndex(1),
+                .padding(top = 8.cssRem, bottom = 4.cssRem),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeroSection(isMobile, palette)
